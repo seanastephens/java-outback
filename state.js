@@ -8,18 +8,11 @@ export const initial = () => ({ questions: [] });
 const DATA_URL = "http://seanastephens.github.io/javaranch-data/questions.json";
 export const loadQuestions = callback => {
 	ajax(DATA_URL, data => {
-		const finishedQuestions = load();
-		const questions2 = JSON.parse(data);
-		console.log(questions2.length)
-		const questions = questions2
-			.filter(q => finishedQuestions[q.id] === undefined);			
-		console.log(questions.length)
-
+		const completed = load();
+		const questions = JSON.parse(data).filter(q => completed[q.id] === undefined);
 		callback({ questions: questions })
 	});
 };
-
-export const remainingQuestions = ({ questions }) => questions.length;
 
 export const reset = callback => {
 	save({});
@@ -35,5 +28,3 @@ export const markCorrect = ({ questions }) => {
 export const markWrong = ({ questions }) => ({ 
 	questions: questions.slice(1).concat([questions[0]])
 });
-
-export const thisQuestion = ({ questions }) => questions[0];
