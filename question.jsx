@@ -2,6 +2,8 @@
 
 import React from 'react';
 
+import shuffle from 'shuffle';
+
 const NOT_ANSWERED = { state: 'not-answered' };
 const CORRECT_ANSWER = { state: 'correct' };
 const INCORRECT_ANSWER = { state: 'incorrect' };
@@ -29,6 +31,7 @@ export default React.createClass( {
 
 		const badAnswers = question.bogus.map(content => answer(content, false));
 		const allAnswers = badAnswers.concat([answer(question.answer, true)]);
+		const shuffledAnswers = shuffle(allAnswers);
 
 		const styleForButton = {
 			true: { backgroundColor: '#6f6' },
@@ -38,7 +41,7 @@ export default React.createClass( {
 		return (<div>
 				<h4>{ question.line }</h4>
 				{ 
-					allAnswers.map((answer, i) => {
+					shuffledAnswers.map((answer, i) => {
 						const buttonColor = styleForButton[answer.correct];
 						const styleObj = (this.state !== NOT_ANSWERED) ? buttonColor : null;
 						const callback = answer.correct ? revealCorrect : revealIncorrect;
@@ -59,7 +62,7 @@ export default React.createClass( {
 							[CORRECT_ANSWER.state]: 'Correct',
 							[INCORRECT_ANSWER.state]: question.explanation,
 						}[this.state.state];
-						const color = (this.state !== NOT_ANSWERED) ? 'red' : 'black';
+						const color = (this.state === INCORRECT_ANSWER) ? 'red' : 'black';
 						const callback = 
 							(this.state === INCORRECT_ANSWER ? nextQuestionIncorrect : nextQuestionCorrect);
 						return (

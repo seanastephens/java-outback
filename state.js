@@ -1,6 +1,7 @@
 'use strict'
 
 import ajax from 'ajax';
+import shuffle from 'shuffle';
 import { load, save } from 'save';
 
 export const initial = () => ({ questions: [] });
@@ -10,7 +11,8 @@ export const loadQuestions = callback => {
 	ajax(DATA_URL, data => {
 		const completed = load();
 		const questions = JSON.parse(data).filter(q => completed[q.id] === undefined);
-		callback({ questions: questions })
+		const shuffledQuestions = shuffle(questions);
+		callback({ questions: shuffledQuestions })
 	});
 };
 
