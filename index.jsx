@@ -32,7 +32,9 @@ const App = React.createClass( {
 				<Header/>
 				{
 					questionsLeft ? 
-					<Question {...{question, onCorrect, onIncorrect}}/> :
+					(
+						<Question {...{question, onCorrect, onIncorrect}}/> 
+					) :
 					<DoneMessage/>
 				}
 				<div className='footer'>
