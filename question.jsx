@@ -43,7 +43,8 @@ export default React.createClass( {
 				{ 
 					shuffledAnswers.map((answer, i) => {
 						const buttonColor = styleForButton[answer.correct];
-						const styleObj = (this.state !== NOT_ANSWERED) ? buttonColor : null;
+						const styleObj = (this.state.state === NOT_ANSWERED.state) 
+							? null : buttonColor;
 						const callback = answer.correct ? revealCorrect : revealIncorrect;
 						return (
 							<div key={i}>
@@ -62,7 +63,7 @@ export default React.createClass( {
 							[CORRECT_ANSWER.state]: 'Correct',
 							[INCORRECT_ANSWER.state]: question.explanation,
 						}[this.state.state];
-						const color = (this.state === INCORRECT_ANSWER) ? 'red' : 'black';
+						const color = (this.state.state === INCORRECT_ANSWER.state) ? 'red' : 'black';
 						const callback = 
 							(this.state === INCORRECT_ANSWER ? nextQuestionIncorrect : nextQuestionCorrect);
 						return (
@@ -72,7 +73,7 @@ export default React.createClass( {
 								className='btn btn-default'
 								onClick={callback}
 								type="button"
-								disabled={this.state === NOT_ANSWERED}>
+								disabled={this.state.state === NOT_ANSWERED.state}>
 								Next
 								</button>
 							</div>
