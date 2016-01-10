@@ -1,7 +1,7 @@
 import React from 'react';
-import Header from 'header';
+import ReactDOM from 'react-dom';
+
 import Question from 'question';
-import DoneMessage from 'done-message';
 import { load, save } from 'save';
 import { 
 	initial, 
@@ -9,7 +9,6 @@ import {
 	loadQuestions, 
 	markCorrect, 
 	markWrong, 
-	thisQuestion,
 	totalNumberOfQuestions,
 	remainingQuestions
 } from 'state';
@@ -20,29 +19,45 @@ const App = React.createClass( {
 		loadQuestions(state => this.setState(state));
 	},
 	render() {
-		const question = thisQuestion(this.state);
+		const question = this.state.questions[0];
+		const questionsLeft = question !== undefined;
 
 		const onCorrect = () => this.setState( markCorrect( this.state ));
 		const onIncorrect = () => this.setState( markWrong( this.state ));
+
+		const resetQuestions = () => reset(state => this.setState(state));
 
 		return (
 			<div className='container'>
 				<Header/>
 				{
-					question 
-					? <Question { ...{question, onCorrect, onIncorrect} } />
-					: <DoneMessage/>
+					questionsLeft ? 
+					<Question {...{question, onCorrect, onIncorrect}}/> :
+					<DoneMessage/>
 				}
-				<div style={{position: 'absolute', bottom: '5%'}}>
-					<h4>{ remainingQuestions(this.state) + " questions left" }</h4>
-					<button 
-						onClick={ () => reset(state => this.setState(state)) }
-						className="btn btn-warning">Reset Questions</button>
+				<div className='footer'>
+					<Info questions={this.state.questions}/>
+					<ResetButton onClick={resetQuestions} />
 				</div>
 			</div>
 		);
 	}
-
 } );
 
-React.render(React.createElement(App), document.body);
+const Header = (props) => (
+	<div className="page-header text-center">
+		<h1>Java Outback</h1>
+	</div>
+);
+
+const DoneMessage = props => (<h4>All done! Refresh the page to start over.</h4>);
+
+const ResetButton = props => (
+	<button className="btn btn-warning" onClick={ props.onClick }>
+		Reset Questions
+	</button>
+);
+
+const Info = props => (<h4>{ props.questions.length + " questions left" }</h4>);
+
+ReactDOM.render(React.createElement(App), document.getElementById('main'));
