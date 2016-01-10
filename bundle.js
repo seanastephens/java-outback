@@ -20548,50 +20548,56 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
+
+	var NOT_ANSWERED = { state: 'not-answered' };
+	var CORRECT_ANSWER = { state: 'correct' };
+	var INCORRECT_ANSWER = { state: 'incorrect' };
 
 	exports['default'] = _react2['default'].createClass({
 		displayName: 'question',
 
 		getInitialState: function getInitialState() {
-			return { explanation: false, congratulations: false };
+			return NOT_ANSWERED;
 		},
 		render: function render() {
 			var _this = this;
 
 			var revealIncorrect = function revealIncorrect() {
-				_this.setState(Object.assign(_this.state, { explanation: true }));
+				return _this.setState(INCORRECT_ANSWER);
 			};
 			var revealCorrect = function revealCorrect() {
-				_this.setState(Object.assign(_this.state, { congratulations: true }));
+				return _this.setState(CORRECT_ANSWER);
 			};
-
-			var parentOnCorrect = this.props.onCorrect;
-			var parentOnIncorrect = this.props.onIncorrect;
 
 			var nextQuestionCorrect = function nextQuestionCorrect() {
-				_this.setState(_this.getInitialState());
-				parentOnCorrect();
+				_this.setState(NOT_ANSWERED);
+				_this.props.onCorrect();
 			};
 			var nextQuestionIncorrect = function nextQuestionIncorrect() {
-				_this.setState(_this.getInitialState());
-				parentOnIncorrect();
+				_this.setState(NOT_ANSWERED);
+				_this.props.onIncorrect();
 			};
 
 			var question = this.props.question;
 
-			var answers = question.bogus.map(function (content) {
-				return { correct: false, content: content, callback: revealIncorrect };
-			}).concat([{ correct: true, content: question.answer, callback: revealCorrect }]);
+			var answer = function answer(content, correct) {
+				return { content: content, correct: correct };
+			};
+
+			var badAnswers = question.bogus.map(function (content) {
+				return answer(content, false);
+			});
+			var allAnswers = Array.prototype.concat.apply(badAnswers, answer(question.answer, true));
 
 			var styleForButton = {
 				'true': { backgroundColor: '#6f6' },
 				'false': { backgroundColor: '#f66' }
 			};
-			var answered = this.state.explanation || this.state.congratulations;
-			var explanation = this.state.explanation;
 
 			return _react2['default'].createElement(
 				'div',
@@ -20601,7 +20607,7 @@
 					null,
 					question.line
 				),
-				answers.map(function (answer, i) {
+				allAnswers.map(function (answer, i) {
 					var buttonColor = styleForButton[answer.correct];
 					return _react2['default'].createElement(
 						'div',
@@ -20609,35 +20615,38 @@
 						_react2['default'].createElement(
 							'button',
 							{
-								className: 'btn ' + (answered ? '' : 'btn-default'),
+								className: 'btn btn-default',
 								style: answered ? buttonColor : null,
-								onClick: answer.callback },
+								onClick: answer.correct ? revealCorrect : revealIncorrect },
 							answer.content
 						)
 					);
 				}),
-				_react2['default'].createElement(
-					'div',
-					null,
-					_react2['default'].createElement(
-						'h4',
-						{ style: { color: explanation ? 'red' : 'black' } },
-						(function () {
-							if (_this.state.explanation) return question.explanation;
-							if (_this.state.congratulations) return "Correct";
-							return null;
-						})()
-					),
-					_react2['default'].createElement(
-						'button',
-						{
-							className: 'btn btn-default',
-							onClick: this.state.explanation ? nextQuestionIncorrect : nextQuestionCorrect,
-							type: 'button',
-							disabled: !answered },
-						'Next'
-					)
-				)
+				(function () {
+					var _NOT_ANSWERED$state$CORRECT_ANSWER$state$INCORRECT_ANSWER$state$state$state;
+
+					var text = (_NOT_ANSWERED$state$CORRECT_ANSWER$state$INCORRECT_ANSWER$state$state$state = {}, _defineProperty(_NOT_ANSWERED$state$CORRECT_ANSWER$state$INCORRECT_ANSWER$state$state$state, NOT_ANSWERED.state, ''), _defineProperty(_NOT_ANSWERED$state$CORRECT_ANSWER$state$INCORRECT_ANSWER$state$state$state, CORRECT_ANSWER.state, 'Correct'), _defineProperty(_NOT_ANSWERED$state$CORRECT_ANSWER$state$INCORRECT_ANSWER$state$state$state, INCORRECT_ANSWER.state, question.explanation), _NOT_ANSWERED$state$CORRECT_ANSWER$state$INCORRECT_ANSWER$state$state$state)[_this.state.state];
+					var color = _this.state !== NOT_ANSWERED ? 'red' : 'black';
+					var callback = _this.state === INCORRECT_ANSWER ? nextQuestionIncorrect : nextQuestionCorrect;
+					return _react2['default'].createElement(
+						'div',
+						null,
+						_react2['default'].createElement(
+							'h4',
+							{ style: { color: color } },
+							text
+						),
+						_react2['default'].createElement(
+							'button',
+							{
+								className: 'btn btn-default',
+								onClick: callback,
+								type: 'button',
+								disabled: _this.state === NOT_ANSWERED },
+							'Next'
+						)
+					);
+				})()
 			);
 		}
 	});
