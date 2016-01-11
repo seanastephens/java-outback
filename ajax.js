@@ -14,4 +14,4 @@ export default (url, callback) => {
 	};
 	req.open("GET", url, true);
 	req.send();
-}
+};
