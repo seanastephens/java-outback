@@ -3,15 +3,7 @@ import ReactDOM from 'react-dom';
 
 import Question from 'question';
 import { load, save } from 'save';
-import { 
-	initial, 
-	reset,
-	loadQuestions, 
-	markCorrect, 
-	markWrong, 
-	totalNumberOfQuestions,
-	remainingQuestions
-} from 'state';
+import { initial, reset, loadQuestions, markCorrect, markWrong } from 'state';
 	
 const App = React.createClass( {
 	getInitialState: initial,
@@ -22,8 +14,8 @@ const App = React.createClass( {
 		const question = this.state.questions[0];
 		const questionsLeft = question !== undefined;
 
-		const onCorrect = () => this.setState( markCorrect( this.state ));
-		const onIncorrect = () => this.setState( markWrong( this.state ));
+		const onCorrect = () => this.setState(markCorrect(this.state));
+		const onIncorrect = () => this.setState(markWrong(this.state));
 
 		const resetQuestions = () => reset(state => this.setState(state));
 
@@ -32,9 +24,7 @@ const App = React.createClass( {
 				<Header/>
 				{
 					questionsLeft ? 
-					(
-						<Question {...{question, onCorrect, onIncorrect}}/> 
-					) :
+					<Question {...{question, onCorrect, onIncorrect}}/> :
 					<DoneMessage/>
 				}
 				<div className='footer'>
@@ -52,7 +42,7 @@ const Header = (props) => (
 	</div>
 );
 
-const DoneMessage = props => (<h4>All done! Refresh the page to start over.</h4>);
+const DoneMessage = props => (<h4>All done! Hit reset to start over.</h4>);
 
 const ResetButton = props => (
 	<button className="btn btn-warning" onClick={ props.onClick }>
