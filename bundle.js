@@ -60,12 +60,14 @@
 	
 	var _question2 = _interopRequireDefault(_question);
 	
-	var _save = __webpack_require__(161);
+	var _save = __webpack_require__(162);
 	
-	var _state = __webpack_require__(162);
+	var _state = __webpack_require__(163);
 	
-	var App = _react2['default'].createClass({
-		displayName: 'App',
+	var _decoration = __webpack_require__(161);
+	
+	var FlashCards = _react2['default'].createClass({
+		displayName: 'FlashCards',
 	
 		getInitialState: _state.initial,
 		componentDidMount: function componentDidMount() {
@@ -97,7 +99,6 @@
 			return _react2['default'].createElement(
 				'div',
 				{ className: 'container' },
-				_react2['default'].createElement(Header, null),
 				questionsLeft ? _react2['default'].createElement(_question2['default'], { question: question, onCorrect: onCorrect, onIncorrect: onIncorrect }) : _react2['default'].createElement(DoneMessage, null),
 				_react2['default'].createElement(
 					'div',
@@ -109,15 +110,128 @@
 		}
 	});
 	
+	var QuestionList = _react2['default'].createClass({
+		displayName: 'QuestionList',
+	
+		getInitialState: _state.initial,
+		componentDidMount: function componentDidMount() {
+			var _this3 = this;
+	
+			this.setState({ finished: (0, _save.load)() });
+			(0, _state.loadQuestions)(function (state) {
+				state.questions.sort(function (a, b) {
+					return Number(a.id) < Number(b.id);
+				});
+				_this3.setState(state);
+			}, true);
+		},
+		render: function render() {
+			var questions = this.state.questions;
+			var finished = this.state.finished;
+	
+			return _react2['default'].createElement(
+				'div',
+				{ className: 'container' },
+				questions.map(function (question) {
+					return _react2['default'].createElement(
+						'div',
+						{ key: question.id, className: 'container well well-lg' },
+						_react2['default'].createElement(
+							'h4',
+							null,
+							finished[question.id] ? _react2['default'].createElement(_decoration.OK, null) : null,
+							' ' + question.question /* space for glyphicon */
+						),
+						_react2['default'].createElement(UnorderedList, { data: question.answers.map(function (a) {
+								return a.answer;
+							}) })
+					);
+				})
+			);
+		}
+	});
+	
+	var UnorderedList = function UnorderedList(props) {
+		return _react2['default'].createElement(
+			'ul',
+			null,
+			props.data.map(function (line, i) {
+				return _react2['default'].createElement(
+					'li',
+					{ className: 'col-xs-12 text-left', key: i },
+					_react2['default'].createElement(
+						'h4',
+						null,
+						line
+					)
+				);
+			})
+		);
+	};
+	var App = _react2['default'].createClass({
+		displayName: 'App',
+	
+		getInitialState: function getInitialState() {
+			return { path: 'Flash Cards' };
+		},
+		render: function render() {
+			var _this4 = this;
+	
+			return _react2['default'].createElement(
+				'div',
+				{ className: 'container' },
+				_react2['default'].createElement(Header, { onChange: function (path) {
+						return _this4.setState({ path: path });
+					} }),
+				this.state.path === 'Flash Cards' ? _react2['default'].createElement(FlashCards, null) : _react2['default'].createElement(QuestionList, null)
+			);
+		}
+	});
+	
 	var Header = function Header(props) {
 		return _react2['default'].createElement(
-			'div',
-			{ className: 'page-header text-center' },
+			'nav',
+			{ className: 'navbar navbar-default' },
 			_react2['default'].createElement(
-				'h1',
-				null,
-				'Java Outback'
+				'div',
+				{ className: 'container-fluid' },
+				_react2['default'].createElement(
+					'div',
+					{ className: 'navbar-header' },
+					_react2['default'].createElement(
+						'span',
+						{ className: 'navbar-brand' },
+						'Java Outback'
+					)
+				),
+				_react2['default'].createElement(
+					'ul',
+					{ className: 'nav navbar-nav' },
+					['Flash Cards', 'Question List'].map(function (text) {
+						return _react2['default'].createElement(
+							'li',
+							{ key: text },
+							_react2['default'].createElement(
+								'a',
+								{ onClick: function () {
+										return props.onChange(text);
+									} },
+								text
+							)
+						);
+					})
+				)
 			)
+		);
+	};
+	
+	var Link = function Link(props) {
+		return _react2['default'].createElement(
+			'span',
+			{ onClick: function () {
+					return props.onClick(props.text);
+				} },
+			props.text
 		);
 	};
 	
@@ -125,7 +239,7 @@
 		return _react2['default'].createElement(
 			'h4',
 			null,
-			'All done! Refresh the page to start over.'
+			'All done! Hit reset to start over.'
 		);
 	};
 	
@@ -19752,9 +19866,9 @@
 		value: true
 	});
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
 	var _react = __webpack_require__(1);
 	
@@ -19764,100 +19878,144 @@
 	
 	var _shuffle2 = _interopRequireDefault(_shuffle);
 	
-	var NOT_ANSWERED = { state: 'not-answered' };
-	var CORRECT_ANSWER = { state: 'correct' };
-	var INCORRECT_ANSWER = { state: 'incorrect' };
+	var _decoration = __webpack_require__(161);
+	
+	// text align style is manually added to the style element
+	// because of bootstrap class precedence issues.
+	var DefaultAnswer = function DefaultAnswer(props) {
+		return _react2['default'].createElement(
+			'button',
+			{ className: 'btn btn-default col-xs-4',
+				style: { textAlign: 'left', backgroundColor: props.backgroundColor },
+				onClick: props.onClick },
+			props.children
+		);
+	};
+	
+	var CorrectAnswer = function CorrectAnswer(props) {
+		return _react2['default'].createElement(
+			DefaultAnswer,
+			{ onClick: props.onClick, backgroundColor: '#BBffBB' },
+			props.children,
+			' ',
+			_react2['default'].createElement(_decoration.OK, { style: { float: 'right' } })
+		);
+	};
+	
+	var IncorrectAnswer = function IncorrectAnswer(props) {
+		return _react2['default'].createElement(
+			DefaultAnswer,
+			{ onClick: props.onClick, backgroundColor: '#ffBBBB' },
+			props.children,
+			' ',
+			_react2['default'].createElement(_decoration.NotOK, { style: { float: 'right' } })
+		);
+	};
+	
+	var Prompt = function Prompt(props) {
+		return _react2['default'].createElement(
+			'h4',
+			null,
+			props.children
+		);
+	};
+	
+	var Answer = function Answer(props) {
+		var answer = props.answer;
+		var onClick = !props.colored ? answer.correct ? props.onCorrect : props.onIncorrect : null;
+		var Element = props.colored ? answer.correct ? CorrectAnswer : IncorrectAnswer : DefaultAnswer;
+		return _react2['default'].createElement(
+			'div',
+			{ className: 'col-xs-12' },
+			_react2['default'].createElement(
+				Element,
+				{ onClick: onClick },
+				' ',
+				answer.answer,
+				' '
+			)
+		);
+	};
+	
+	var Spacer = function Spacer(props) {
+		return _react2['default'].createElement('div', { className: 'col-xs-12', style: props });
+	};
+	
+	var NextButton = function NextButton(props) {
+		return _react2['default'].createElement(
+			'div',
+			{ className: 'col-xs-12' },
+			_react2['default'].createElement(
+				'button',
+				_extends({ className: 'btn btn-default col-xs-2' }, props),
+				'Next'
+			)
+		);
+	};
+	
+	var Result = function Result(props) {
+		return _react2['default'].createElement(
+			'div',
+			{ className: 'col-xs-12' },
+			_react2['default'].createElement(
+				'h4',
+				{ style: { color: props.incorrect ? 'red' : 'black' } },
+				props.children
+			)
+		);
+	};
 	
 	exports['default'] = _react2['default'].createClass({
 		displayName: 'question',
 	
 		getInitialState: function getInitialState() {
-			return NOT_ANSWERED;
+			return { answered: null };
 		},
 		render: function render() {
 			var _this = this;
 	
-			var revealIncorrect = function revealIncorrect() {
-				return _this.setState(INCORRECT_ANSWER);
-			};
-			var revealCorrect = function revealCorrect() {
-				return _this.setState(CORRECT_ANSWER);
-			};
-	
-			var nextQuestionCorrect = function nextQuestionCorrect() {
-				_this.setState(NOT_ANSWERED);
-				_this.props.onCorrect();
-			};
-			var nextQuestionIncorrect = function nextQuestionIncorrect() {
-				_this.setState(NOT_ANSWERED);
-				_this.props.onIncorrect();
-			};
-	
+			var incorrectCallback = this.props.onIncorrect;
+			var correctCallback = this.props.onCorrect;
 			var question = this.props.question;
+			var colored = this.state.answered;
+			var answered = this.state.answered;
+			var explanation = question.explanation;
+			var answers = question.answers;
 	
-			var answer = function answer(content, correct) {
-				return { content: content, correct: correct };
+			var onCorrect = function onCorrect() {
+				return _this.setState({ answered: 'correct' });
+			};
+			var onIncorrect = function onIncorrect() {
+				return _this.setState({ answered: 'incorrect' });
 			};
 	
-			var badAnswers = question.bogus.map(function (content) {
-				return answer(content, false);
-			});
-			var allAnswers = badAnswers.concat([answer(question.answer, true)]);
-			var shuffledAnswers = (0, _shuffle2['default'])(allAnswers);
-	
-			var styleForButton = {
-				'true': { backgroundColor: '#6f6' },
-				'false': { backgroundColor: '#f66' }
+			var nextCallback = function nextCallback() {
+				_this.state.answered === 'correct' ? correctCallback() : incorrectCallback();
+				_this.setState(_this.getInitialState());
 			};
 	
 			return _react2['default'].createElement(
 				'div',
-				null,
+				{ className: 'container' },
 				_react2['default'].createElement(
-					'h4',
+					Prompt,
 					null,
-					question.line
+					question.question
 				),
-				shuffledAnswers.map(function (answer, i) {
-					var buttonColor = styleForButton[answer.correct];
-					var styleObj = _this.state.state === NOT_ANSWERED.state ? null : buttonColor;
-					var callback = answer.correct ? revealCorrect : revealIncorrect;
-					return _react2['default'].createElement(
-						'div',
-						{ key: i },
-						_react2['default'].createElement(
-							'button',
-							{ className: 'btn btn-default', style: styleObj,
-								onClick: callback },
-							answer.content
-						)
-					);
-				}),
-				(function () {
-					var _NOT_ANSWERED$state$CORRECT_ANSWER$state$INCORRECT_ANSWER$state$state$state;
-	
-					var text = (_NOT_ANSWERED$state$CORRECT_ANSWER$state$INCORRECT_ANSWER$state$state$state = {}, _defineProperty(_NOT_ANSWERED$state$CORRECT_ANSWER$state$INCORRECT_ANSWER$state$state$state, NOT_ANSWERED.state, ''), _defineProperty(_NOT_ANSWERED$state$CORRECT_ANSWER$state$INCORRECT_ANSWER$state$state$state, CORRECT_ANSWER.state, 'Correct'), _defineProperty(_NOT_ANSWERED$state$CORRECT_ANSWER$state$INCORRECT_ANSWER$state$state$state, INCORRECT_ANSWER.state, question.explanation), _NOT_ANSWERED$state$CORRECT_ANSWER$state$INCORRECT_ANSWER$state$state$state)[_this.state.state];
-					var color = _this.state.state === INCORRECT_ANSWER.state ? 'red' : 'black';
-					var callback = _this.state === INCORRECT_ANSWER ? nextQuestionIncorrect : nextQuestionCorrect;
-					return _react2['default'].createElement(
-						'div',
-						null,
-						_react2['default'].createElement(
-							'h4',
-							{ style: { color: color } },
-							text
-						),
-						_react2['default'].createElement(
-							'button',
-							{
-								className: 'btn btn-default',
-								onClick: callback,
-								type: 'button',
-								disabled: _this.state.state === NOT_ANSWERED.state },
-							'Next'
-						)
-					);
-				})()
+				_react2['default'].createElement(
+					'div',
+					null,
+					answers.map(function (answer, key) {
+						return _react2['default'].createElement(Answer, { key: key, answer: answer, colored: colored, onCorrect: onCorrect, onIncorrect: onIncorrect });
+					})
+				),
+				_react2['default'].createElement(Spacer, { height: '40px' }),
+				_react2['default'].createElement(NextButton, { onClick: nextCallback, disabled: !answered }),
+				_react2['default'].createElement(
+					Result,
+					{ incorrect: answered === 'incorrect' },
+					answered && (answered === 'correct' ? 'Correct' : explanation)
+				)
 			);
 		}
 	});
@@ -19899,6 +20057,36 @@
 
 /***/ },
 /* 161 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+		value: true
+	});
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var merge = function merge(a, b) {
+		return Object.assign({}, a, b);
+	};
+	
+	var OK = function OK(props) {
+		return _react2['default'].createElement('span', { style: merge(props.style, { color: 'green' }), className: 'glyphicon glyphicon-ok' });
+	};
+	
+	exports.OK = OK;
+	var NotOK = function NotOK(props) {
+		return _react2['default'].createElement('span', { style: merge(props.style, { color: 'red' }), className: 'glyphicon glyphicon-remove' });
+	};
+	exports.NotOK = NotOK;
+
+/***/ },
+/* 162 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -19918,7 +20106,7 @@
 	exports.load = load;
 
 /***/ },
-/* 162 */
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19931,7 +20119,7 @@
 	
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
-	var _ajax = __webpack_require__(163);
+	var _ajax = __webpack_require__(164);
 	
 	var _ajax2 = _interopRequireDefault(_ajax);
 	
@@ -19939,22 +20127,22 @@
 	
 	var _shuffle2 = _interopRequireDefault(_shuffle);
 	
-	var _save = __webpack_require__(161);
+	var _save = __webpack_require__(162);
 	
 	var initial = function initial() {
 		return { questions: [] };
 	};
 	
 	exports.initial = initial;
-	var DATA_URL = "http://seanastephens.github.io/javaranch-data/questions.json";
-	var loadQuestions = function loadQuestions(callback) {
+	var DATA_URL = "http://seanastephens.github.io/javaranch-data/questions.v2.json";
+	var loadQuestions = function loadQuestions(callback, nofilter) {
 		(0, _ajax2['default'])(DATA_URL, function (data) {
 			var completed = (0, _save.load)();
-			var questions = JSON.parse(data).filter(function (q) {
-				return completed[q.id] === undefined;
-			});
-			var shuffledQuestions = (0, _shuffle2['default'])(questions);
-			callback({ questions: shuffledQuestions });
+			var questions = (0, _shuffle2['default'])(JSON.parse(data).filter(function (q) {
+				return nofilter || completed[q.id] === undefined;
+			}));
+	
+			callback({ questions: questions });
 		});
 	};
 	
@@ -19983,7 +20171,7 @@
 	exports.markWrong = markWrong;
 
 /***/ },
-/* 163 */
+/* 164 */
 /***/ function(module, exports) {
 
 	'use strict';
