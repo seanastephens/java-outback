@@ -99,10 +99,14 @@
 			return _react2['default'].createElement(
 				'div',
 				{ className: 'container' },
-				questionsLeft ? _react2['default'].createElement(_question2['default'], { question: question, onCorrect: onCorrect, onIncorrect: onIncorrect }) : _react2['default'].createElement(DoneMessage, null),
 				_react2['default'].createElement(
 					'div',
-					{ className: 'footer' },
+					{ style: { minHeight: '400px' } },
+					questionsLeft ? _react2['default'].createElement(_question2['default'], { question: question, onCorrect: onCorrect, onIncorrect: onIncorrect }) : _react2['default'].createElement(DoneMessage, null)
+				),
+				_react2['default'].createElement(
+					'div',
+					null,
 					_react2['default'].createElement(Info, { questions: this.state.questions }),
 					_react2['default'].createElement(ResetButton, { onClick: resetQuestions })
 				)
@@ -19885,7 +19889,7 @@
 	var DefaultAnswer = function DefaultAnswer(props) {
 		return _react2['default'].createElement(
 			'button',
-			{ className: 'btn btn-default col-xs-4',
+			{ className: 'btn btn-default col-md-4',
 				style: { textAlign: 'left', backgroundColor: props.backgroundColor },
 				onClick: props.onClick },
 			props.children
@@ -19926,7 +19930,7 @@
 		var Element = props.colored ? answer.correct ? CorrectAnswer : IncorrectAnswer : DefaultAnswer;
 		return _react2['default'].createElement(
 			'div',
-			{ className: 'col-xs-12' },
+			{ className: 'col-md-12' },
 			_react2['default'].createElement(
 				Element,
 				{ onClick: onClick },
@@ -19938,16 +19942,16 @@
 	};
 	
 	var Spacer = function Spacer(props) {
-		return _react2['default'].createElement('div', { className: 'col-xs-12', style: props });
+		return _react2['default'].createElement('div', { className: 'col-md-12', style: props });
 	};
 	
 	var NextButton = function NextButton(props) {
 		return _react2['default'].createElement(
 			'div',
-			{ className: 'col-xs-12' },
+			{ className: 'col-md-12' },
 			_react2['default'].createElement(
 				'button',
-				_extends({ className: 'btn btn-default col-xs-2' }, props),
+				_extends({ className: 'btn btn-default col-md-2' }, props),
 				'Next'
 			)
 		);
@@ -19956,7 +19960,7 @@
 	var Result = function Result(props) {
 		return _react2['default'].createElement(
 			'div',
-			{ className: 'col-xs-12' },
+			{ className: 'col-md-12' },
 			_react2['default'].createElement(
 				'h4',
 				{ style: { color: props.incorrect ? 'red' : 'black' } },
