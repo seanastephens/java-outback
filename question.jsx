@@ -3,6 +3,7 @@
 import React from 'react';
 
 import shuffle from 'shuffle';
+import { OK, NotOK } from 'decoration';
 
 // text align style is manually added to the style element
 // because of bootstrap class precedence issues. 
@@ -13,11 +14,15 @@ const DefaultAnswer = (props) => (
 );
 
 const CorrectAnswer = (props) => (
-	<DefaultAnswer {...props} backgroundColor={'#66FF66'}/>
+	<DefaultAnswer onClick={props.onClick} backgroundColor="#BBffBB">
+		{ props.children } <OK style={{float: 'right'}}/>
+	</DefaultAnswer>
 );
 
 const IncorrectAnswer = (props) => (
-	<DefaultAnswer {...props} backgroundColor={'#FF6666'}/>
+	<DefaultAnswer onClick={props.onClick} backgroundColor="#ffBBBB">
+		{ props.children } <NotOK style={{float: 'right'}}/>
+	</DefaultAnswer>
 );
 
 const Prompt = (props) => (<h4>{ props.children }</h4>);
@@ -28,7 +33,7 @@ const Answer = (props) => {
 	const Element = props.colored ? (answer.correct ? CorrectAnswer : IncorrectAnswer) : DefaultAnswer;
 	return (
 		<div className='col-xs-12'>
-			<Element onClick={onClick}> { answer.content } </Element>
+			<Element onClick={onClick}> { answer.answer } </Element>
 		</div>
 	);
 };
@@ -70,7 +75,7 @@ export default React.createClass({
 
 		return (
 			<div className='container'>
-				<Prompt>{ question.prompt }</Prompt>
+				<Prompt>{ question.question }</Prompt>
 				<div>
 					{
 						answers.map((answer, key) => {

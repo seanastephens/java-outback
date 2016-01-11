@@ -6,20 +6,12 @@ import { load, save } from 'save';
 
 export const initial = () => ({ questions: [] });
 
-//const DATA_URL = "http://seanastephens.github.io/javaranch-data/questions.json";
-const DATA_URL = "questions.json";
-export const loadQuestions = callback => {
+const DATA_URL = "http://seanastephens.github.io/javaranch-data/questions.v2.json";
+export const loadQuestions = (callback, nofilter) => {
 	ajax(DATA_URL, data => {
 		const completed = load();
 		const questions = shuffle(JSON.parse(data)
-			.filter(q => completed[q.id] === undefined)
-			.map(({ id, bogus, answer, explanation, line }) => ({
-				id,
-				explanation,
-				prompt: line,
-				answers: shuffle(bogus.map(text => ({ content: text, correct: false}))
-					.concat({content:answer, correct: true}))
-			})));
+			.filter(q => nofilter || completed[q.id] === undefined));
 
 		callback({ questions });
 	});

@@ -4,8 +4,9 @@ import ReactDOM from 'react-dom';
 import Question from 'question';
 import { load, save } from 'save';
 import { initial, reset, loadQuestions, markCorrect, markWrong } from 'state';
+import { OK } from 'decoration';
 	
-const App = React.createClass( {
+const FlashCards = React.createClass( {
 	getInitialState: initial,
 	componentDidMount() {
 		loadQuestions(state => this.setState(state));
@@ -21,7 +22,6 @@ const App = React.createClass( {
 
 		return (
 			<div className='container'>
-				<Header/>
 				{
 					questionsLeft ? 
 					<Question {...{question, onCorrect, onIncorrect}}/> :
@@ -34,12 +34,86 @@ const App = React.createClass( {
 			</div>
 		);
 	}
-} );
+});
+
+const QuestionList = React.createClass({
+	getInitialState: initial,
+	componentDidMount() {
+		this.setState({finished: load()});
+		loadQuestions(state => {
+			state.questions.sort((a, b) => Number(a.id) < Number(b.id));
+			this.setState(state)
+		}, true);
+	},
+	render() {
+		const questions = this.state.questions;
+		const finished = this.state.finished
+
+		return (
+			<div className='container'>
+					{
+						questions.map(question => (
+								<div key={question.id} className='container well well-lg'>
+									<h4>
+										{ finished[question.id] ? <OK/> : null }
+										{ ' ' + question.question /* space for glyphicon */ }
+									</h4>
+									<UnorderedList data={question.answers.map(a => a.answer)}/>
+								</div>
+							)
+						)
+					}
+			</div>
+		);
+	}
+});
+
+const UnorderedList = (props) => (
+	<ul>
+		{
+			props.data.map((line, i) => (
+				<li className="col-xs-12 text-left" key={i}>
+					<h4>
+						{ line }
+					</h4>
+				</li>
+			))
+		}
+	</ul>
+);
+const App = React.createClass({
+	getInitialState: () => ({ path: 'Flash Cards' }),
+	render() {
+		return (
+			<div className='container'>
+				<Header onChange={path => this.setState({path})} />
+				{
+					this.state.path === 'Flash Cards' ? <FlashCards/> : <QuestionList/>
+				}
+			</div>
+		);
+	}
+});
 
 const Header = (props) => (
-	<div className="page-header text-center">
-		<h1>Java Outback</h1>
-	</div>
+	<nav className="navbar navbar-default">
+		<div className="container-fluid">
+			<div className="navbar-header">
+				<span className="navbar-brand">Java Outback</span>
+			</div>
+			<ul className="nav navbar-nav">
+				{
+					['Flash Cards', 'Question List'].map(text => (
+						<li key={text}><a onClick={() => props.onChange(text)}>{text}</a></li>
+					))
+				}
+			</ul>
+		</div>
+	</nav>
+);
+
+const Link = (props) => (
+	<span onClick={() => props.onClick(props.text)}>{props.text}</span>
 );
 
 const DoneMessage = props => (<h4>All done! Hit reset to start over.</h4>);
