@@ -8,7 +8,7 @@ import { OK, NotOK } from 'decoration';
 // text align style is manually added to the style element
 // because of bootstrap class precedence issues. 
 const DefaultAnswer = (props) => (
-	<button className='btn btn-default col-xs-4' 
+	<button className='btn btn-default col-md-4' 
 		style={{textAlign: 'left', backgroundColor: props.backgroundColor}} 
 		onClick={ props.onClick }>{ props.children }</button>
 );
@@ -32,22 +32,22 @@ const Answer = (props) => {
 	const onClick = !props.colored ? (answer.correct ? props.onCorrect : props.onIncorrect) : null;
 	const Element = props.colored ? (answer.correct ? CorrectAnswer : IncorrectAnswer) : DefaultAnswer;
 	return (
-		<div className='col-xs-12'>
+		<div className='col-md-12'>
 			<Element onClick={onClick}> { answer.answer } </Element>
 		</div>
 	);
 };
 
-const Spacer = (props) => (<div className="col-xs-12" style={props}/>);
+const Spacer = (props) => (<div className="col-md-12" style={props}/>);
 
 const NextButton = (props) => (
-	<div className="col-xs-12">
-		<button className='btn btn-default col-xs-2' {...props}>Next</button>
+	<div className="col-md-12">
+		<button className='btn btn-default col-md-2' {...props}>Next</button>
 	</div>
 );
 
 const Result = (props) => (
-	<div className="col-xs-12">
+	<div className="col-md-12">
 		<h4 style={{color: props.incorrect ? 'red' : 'black'}}>
 			{ props.children }
 		</h4>

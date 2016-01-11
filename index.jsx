@@ -22,12 +22,14 @@ const FlashCards = React.createClass( {
 
 		return (
 			<div className='container'>
-				{
-					questionsLeft ? 
-					<Question {...{question, onCorrect, onIncorrect}}/> :
-					<DoneMessage/>
-				}
-				<div className='footer'>
+				<div style={{minHeight: '400px' }}>
+					{
+						questionsLeft ? 
+						<Question {...{question, onCorrect, onIncorrect}}/> :
+						<DoneMessage/>
+					}
+				</div>
+				<div>
 					<Info questions={this.state.questions}/>
 					<ResetButton onClick={resetQuestions} />
 				</div>
