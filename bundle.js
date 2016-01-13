@@ -117,7 +117,9 @@
 	var QuestionList = _react2['default'].createClass({
 		displayName: 'QuestionList',
 	
-		getInitialState: _state.initial,
+		getInitialState: function getInitialState() {
+			return Object.assign({}, (0, _state.initial)(), { search: '' });
+		},
 		componentDidMount: function componentDidMount() {
 			var _this3 = this;
 	
@@ -130,13 +132,31 @@
 			}, true);
 		},
 		render: function render() {
+			var _this4 = this;
+	
 			var questions = this.state.questions;
 			var finished = this.state.finished;
+	
+			var searchFields = function searchFields(question) {
+				return question.answers.map(function (answer) {
+					return answer.answer;
+				}).concat([question.question]);
+			};
+	
+			var query = this.state.search.toUpperCase();
+			var filter = function filter(question) {
+				return searchFields(question).some(function (text) {
+					return text.toUpperCase().includes(query);
+				});
+			};
 	
 			return _react2['default'].createElement(
 				'div',
 				{ className: 'container' },
-				questions.map(function (question) {
+				_react2['default'].createElement(Search, { onchange: function (search) {
+						return _this4.setState({ search: search });
+					} }),
+				questions.filter(filter).map(function (question) {
 					return _react2['default'].createElement(
 						'div',
 						{ key: question.id, className: 'container well well-lg' },
@@ -155,6 +175,27 @@
 		}
 	});
 	
+	var Search = function Search(props) {
+		return _react2['default'].createElement(
+			'div',
+			{ className: 'container well well-md' },
+			_react2['default'].createElement(
+				'div',
+				{ className: 'input-group' },
+				_react2['default'].createElement(
+					'span',
+					{ className: 'input-group-addon' },
+					'Search'
+				),
+				_react2['default'].createElement('input', { type: 'text',
+					className: 'form-control', id: 'search-bar',
+					onChange: function (event) {
+						return props.onchange(event.target.value);
+					} })
+			)
+		);
+	};
+	
 	var UnorderedList = function UnorderedList(props) {
 		return _react2['default'].createElement(
 			'ul',
@@ -172,6 +213,7 @@
 			})
 		);
 	};
+	
 	var App = _react2['default'].createClass({
 		displayName: 'App',
 	
@@ -179,13 +221,13 @@
 			return { path: 'Flash Cards' };
 		},
 		render: function render() {
-			var _this4 = this;
+			var _this5 = this;
 	
 			return _react2['default'].createElement(
 				'div',
 				{ className: 'container' },
 				_react2['default'].createElement(Header, { onChange: function (path) {
-						return _this4.setState({ path: path });
+						return _this5.setState({ path: path });
 					} }),
 				this.state.path === 'Flash Cards' ? _react2['default'].createElement(FlashCards, null) : _react2['default'].createElement(QuestionList, null)
 			);
