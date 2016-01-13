@@ -39,7 +39,7 @@ const FlashCards = React.createClass( {
 });
 
 const QuestionList = React.createClass({
-	getInitialState: initial,
+	getInitialState: () => Object.assign({}, initial(), {search: ''}),
 	componentDidMount() {
 		this.setState({finished: load()});
 		loadQuestions(state => {
@@ -51,10 +51,20 @@ const QuestionList = React.createClass({
 		const questions = this.state.questions;
 		const finished = this.state.finished
 
+		const searchFields = question => question.answers
+			.map(answer => answer.answer)
+			.concat([question.question]);
+
+		const query = this.state.search.toUpperCase();
+		const filter = question => searchFields(question)
+			.some(text => text.toUpperCase().includes(query));
+
+
 		return (
 			<div className='container'>
+				<Search onchange={search => this.setState({search})} />
 					{
-						questions.map(question => (
+						questions.filter(filter).map(question => (
 								<div key={question.id} className='container well well-lg'>
 									<h4>
 										{ finished[question.id] ? <OK/> : null }
@@ -70,6 +80,17 @@ const QuestionList = React.createClass({
 	}
 });
 
+const Search = (props) => (
+	<div className='container well well-md'>
+		<div className="input-group">
+			<span className="input-group-addon">Search</span>
+			<input type="text" 
+				className="form-control" id="search-bar" 
+				onChange={event => props.onchange(event.target.value)}/>
+		</div>
+	</div>
+);
+
 const UnorderedList = (props) => (
 	<ul>
 		{
@@ -83,6 +104,7 @@ const UnorderedList = (props) => (
 		}
 	</ul>
 );
+
 const App = React.createClass({
 	getInitialState: () => ({ path: 'Flash Cards' }),
 	render() {
