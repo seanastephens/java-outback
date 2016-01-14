@@ -1,5 +1,7 @@
 'use strict';
 
+import React from 'react';
+
 const merge = (a, b) => Object.assign({}, a, b);
 
 export const OK = ({ style }) => 

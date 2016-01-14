@@ -9,15 +9,7 @@ const deterministic = () => {
 	return s - Math.floor(s);
 };
 
-/*
- * In place Fisher-Yates shuffle
- */
-export default A => {
-	for(let i = A.length - 1; i > 0; i--) {
-		const j = Math.floor(deterministic() * (i-1));
-		const temp = A[i];
-		A[i] = A[j];
-		A[j] = temp;
-	}
-	return A;	
-};
+export default A => A
+	.map(x => [x, deterministic()])
+	.sort(( [ , a], [ , b]) => a - b)
+	.map(([x, ]) => x);

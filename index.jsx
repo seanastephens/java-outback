@@ -7,12 +7,15 @@ import { initial, reset, loadQuestions, markCorrect, markWrong } from 'state';
 import { OK } from 'decoration';
 import shuffle from 'shuffle';
 	
+const sortAnswers = ({ answers }) => answers.sort((a, b) => a.answer < b.answer ? 1 : -1);
+
 const FlashCards = React.createClass( {
 	getInitialState: initial,
 
 	storeJSONInState(json) {
 		const done = load();
 		const questions = shuffle(json.filter(q => !done[q.id]));
+		questions.forEach(sortAnswers);
 		this.setState({ questions });
 	},
 
@@ -54,6 +57,7 @@ const QuestionList = React.createClass({
 		this.setState({finished: load()});
 		loadQuestions(questions => {
 			questions.sort((a, b) => Number(a.id) < Number(b.id));
+			questions.forEach(sortAnswers);
 			this.setState({ questions });
 		}, true);
 	},
