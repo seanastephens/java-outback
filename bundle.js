@@ -70,6 +70,13 @@
 	
 	var _shuffle2 = _interopRequireDefault(_shuffle);
 	
+	var sortAnswers = function sortAnswers(_ref) {
+		var answers = _ref.answers;
+		return answers.sort(function (a, b) {
+			return a.answer < b.answer ? 1 : -1;
+		});
+	};
+	
 	var FlashCards = _react2['default'].createClass({
 		displayName: 'FlashCards',
 	
@@ -80,6 +87,7 @@
 			var questions = (0, _shuffle2['default'])(json.filter(function (q) {
 				return !done[q.id];
 			}));
+			questions.forEach(sortAnswers);
 			this.setState({ questions: questions });
 		},
 	
@@ -137,8 +145,9 @@
 				questions.sort(function (a, b) {
 					return Number(a.id) < Number(b.id);
 				});
+				questions.forEach(sortAnswers);
 				_this2.setState({ questions: questions });
-			}, true);
+			});
 		},
 		render: function render() {
 			var _this3 = this;
@@ -184,8 +193,8 @@
 		}
 	});
 	
-	var Search = function Search(_ref) {
-		var onchange = _ref.onchange;
+	var Search = function Search(_ref2) {
+		var onchange = _ref2.onchange;
 		return _react2['default'].createElement(
 			'div',
 			{ className: 'container well well-md' },
@@ -206,8 +215,8 @@
 		);
 	};
 	
-	var UnorderedList = function UnorderedList(_ref2) {
-		var data = _ref2.data;
+	var UnorderedList = function UnorderedList(_ref3) {
+		var data = _ref3.data;
 		return _react2['default'].createElement(
 			'ul',
 			null,
@@ -245,8 +254,8 @@
 		}
 	});
 	
-	var Header = function Header(_ref3) {
-		var onChange = _ref3.onChange;
+	var Header = function Header(_ref4) {
+		var onChange = _ref4.onChange;
 		return _react2['default'].createElement(
 			'nav',
 			{ className: 'navbar navbar-default' },
@@ -291,8 +300,8 @@
 		);
 	};
 	
-	var ResetButton = function ResetButton(_ref4) {
-		var onClick = _ref4.onClick;
+	var ResetButton = function ResetButton(_ref5) {
+		var onClick = _ref5.onClick;
 		return _react2['default'].createElement(
 			'button',
 			{ className: 'btn btn-warning', onClick: onClick },
@@ -300,8 +309,8 @@
 		);
 	};
 	
-	var Info = function Info(_ref5) {
-		var questions = _ref5.questions;
+	var Info = function Info(_ref6) {
+		var questions = _ref6.questions;
 		return _react2['default'].createElement(
 			'h4',
 			null,
@@ -20085,26 +20094,35 @@
 
 /***/ },
 /* 160 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	Object.defineProperty(exports, '__esModule', {
 		value: true
 	});
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	//eslint-disable-line no-unused-vars
+	
 	var merge = function merge(a, b) {
 		return Object.assign({}, a, b);
 	};
 	
 	var OK = function OK(_ref) {
 		var style = _ref.style;
-		return React.createElement('span', { style: merge(style, { color: 'green' }), className: 'glyphicon glyphicon-ok' });
+		return _react2['default'].createElement('span', { style: merge(style, { color: 'green' }), className: 'glyphicon glyphicon-ok' });
 	};
 	
 	exports.OK = OK;
 	var NotOK = function NotOK(_ref2) {
 		var style = _ref2.style;
-		return React.createElement('span', { style: merge(style, { color: 'red' }), className: 'glyphicon glyphicon-remove' });
+		return _react2['default'].createElement('span', { style: merge(style, { color: 'red' }), className: 'glyphicon glyphicon-remove' });
 	};
 	exports.NotOK = NotOK;
 
@@ -20587,18 +20605,14 @@
 		return s - Math.floor(s);
 	};
 	
-	/*
-	 * In place Fisher-Yates shuffle
-	 */
-	
 	exports['default'] = function (A) {
-		for (var i = A.length - 1; i > 0; i--) {
-			var j = Math.floor(deterministic() * (i - 1));
-			var temp = A[i];
-			A[i] = A[j];
-			A[j] = temp;
-		}
-		return A;
+		return A.map(function (x) {
+			return [x, deterministic()];
+		}).sort(function (a, b) {
+			return a[1] - b[1];
+		}).map(function (x) {
+			return x[0];
+		});
 	};
 	
 	module.exports = exports['default'];
