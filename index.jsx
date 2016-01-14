@@ -25,7 +25,10 @@ const FlashCards = React.createClass( {
 		const onCorrect = () => this.setState(markCorrect(this.state));
 		const onIncorrect = () => this.setState(markWrong(this.state));
 
-		const resetQuestions = function() { loadQuestions(this.storeJSONInState); };
+		const resetQuestions = () => {
+			reset();
+			loadQuestions(this.storeJSONInState);
+		}
 
 		return (
 			<div className='container'>

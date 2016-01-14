@@ -10,10 +10,7 @@ export const loadQuestions = callback => fetch(DATA_URL)
 	.then(d => d.json())
 	.then(callback);
 
-export const reset = callback => {
-	save({});
-	loadQuestions(callback);
-};
+export const reset = () => save({});
 
 export const markCorrect = ({ questions }) => {
 	console.log(Object.keys(load()));
