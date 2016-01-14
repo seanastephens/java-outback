@@ -19982,23 +19982,11 @@
 	};
 	
 	var Answer = function Answer(_ref5) {
-		var answer = _ref5.answer;
-		var onCorrect = _ref5.onCorrect;
-		var onIncorrect = _ref5.onIncorrect;
-		var colored = _ref5.colored;
-	
-		var onClick = !colored ? answer.correct ? onCorrect : onIncorrect : null;
-		var Element = colored ? answer.correct ? CorrectAnswer : IncorrectAnswer : DefaultAnswer;
+		var children = _ref5.children;
 		return _react2['default'].createElement(
 			'div',
 			{ className: 'col-md-12' },
-			_react2['default'].createElement(
-				Element,
-				{ onClick: onClick },
-				' ',
-				answer.answer,
-				' '
-			)
+			children
 		);
 	};
 	
@@ -20023,14 +20011,14 @@
 	};
 	
 	var Result = function Result(_ref8) {
-		var incorrect = _ref8.incorrect;
+		var correct = _ref8.correct;
 		var children = _ref8.children;
 		return _react2['default'].createElement(
 			'div',
 			{ className: 'col-md-12' },
 			_react2['default'].createElement(
 				'h4',
-				{ style: { color: incorrect ? 'red' : 'black' } },
+				{ style: { color: correct ? 'black' : 'red' } },
 				children
 			)
 		);
@@ -20045,23 +20033,18 @@
 		render: function render() {
 			var _this = this;
 	
-			var incorrectCallback = this.props.onIncorrect;
-			var correctCallback = this.props.onCorrect;
-			var question = this.props.question;
-			var colored = this.state.answered;
-			var answered = this.state.answered;
+			var _props = this.props;
+			var question = _props.question;
+			var onCorrect = _props.onCorrect;
+			var onIncorrect = _props.onIncorrect;
 			var explanation = question.explanation;
 			var answers = question.answers;
+			var answered = this.state.answered;
 	
-			var onCorrect = function onCorrect() {
-				return _this.setState({ answered: 'correct' });
-			};
-			var onIncorrect = function onIncorrect() {
-				return _this.setState({ answered: 'incorrect' });
-			};
+			var answeredCorrect = answered === 'correct';
 	
 			var nextCallback = function nextCallback() {
-				_this.state.answered === 'correct' ? correctCallback() : incorrectCallback();
+				answeredCorrect ? onCorrect() : onIncorrect();
 				_this.setState(_this.getInitialState());
 			};
 	
@@ -20076,16 +20059,33 @@
 				_react2['default'].createElement(
 					'div',
 					null,
-					answers.map(function (answer, key) {
-						return _react2['default'].createElement(Answer, { key: key, answer: answer, colored: colored, onCorrect: onCorrect, onIncorrect: onIncorrect });
+					answers.map(function (_ref9, key) {
+						var answer = _ref9.answer;
+						var correct = _ref9.correct;
+	
+						var Element = answered ? correct ? CorrectAnswer : IncorrectAnswer : DefaultAnswer;
+	
+						var callback = function callback() {
+							if (!answered) _this.setState({ answered: correct ? 'correct' : 'incorrect' });
+						};
+	
+						return _react2['default'].createElement(
+							Answer,
+							{ key: key },
+							_react2['default'].createElement(
+								Element,
+								{ onClick: callback },
+								answer
+							)
+						);
 					})
 				),
 				_react2['default'].createElement(Spacer, { style: { height: '40px' } }),
 				_react2['default'].createElement(NextButton, { onClick: nextCallback, disabled: !answered }),
 				_react2['default'].createElement(
 					Result,
-					{ incorrect: answered === 'incorrect' },
-					answered && (answered === 'correct' ? 'Correct' : explanation)
+					{ correct: answeredCorrect },
+					answered ? answeredCorrect ? 'Correct' : explanation : null
 				)
 			);
 		}
