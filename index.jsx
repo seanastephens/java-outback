@@ -5,12 +5,19 @@ import Question from 'question';
 import { load, save } from 'save';
 import { initial, reset, loadQuestions, markCorrect, markWrong } from 'state';
 import { OK } from 'decoration';
+import shuffle from 'shuffle';
 	
 const FlashCards = React.createClass( {
 	getInitialState: initial,
-	componentDidMount() {
-		loadQuestions(state => this.setState(state));
+
+	storeJSONInState(json) {
+		const done = load();
+		const questions = shuffle(json.filter(q => !done[q.id]));
+		this.setState({ questions });
 	},
+
+	componentDidMount: function() { loadQuestions(this.storeJSONInState); },
+
 	render() {
 		const question = this.state.questions[0];
 		const questionsLeft = question !== undefined;
@@ -18,7 +25,7 @@ const FlashCards = React.createClass( {
 		const onCorrect = () => this.setState(markCorrect(this.state));
 		const onIncorrect = () => this.setState(markWrong(this.state));
 
-		const resetQuestions = () => reset(state => this.setState(state));
+		const resetQuestions = function() { loadQuestions(this.storeJSONInState); };
 
 		return (
 			<div className='container'>
@@ -42,9 +49,9 @@ const QuestionList = React.createClass({
 	getInitialState: () => Object.assign({}, initial(), {search: ''}),
 	componentDidMount() {
 		this.setState({finished: load()});
-		loadQuestions(state => {
-			state.questions.sort((a, b) => Number(a.id) < Number(b.id));
-			this.setState(state)
+		loadQuestions(questions => {
+			questions.sort((a, b) => Number(a.id) < Number(b.id));
+			this.setState({ questions });
 		}, true);
 	},
 	render() {
