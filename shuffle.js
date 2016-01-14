@@ -11,5 +11,5 @@ const deterministic = () => {
 
 export default A => A
 	.map(x => [x, deterministic()])
-	.sort(( [ , a], [ , b]) => a - b)
-	.map(([x, ]) => x);
+	.sort((a, b) => a[1] - b[1])
+	.map(x => x[0]);

@@ -1,6 +1,6 @@
 'use strict';
 
-import React from 'react';
+import React from 'react'; //eslint-disable-line no-unused-vars
 
 const merge = (a, b) => Object.assign({}, a, b);
 
