@@ -60,13 +60,13 @@
 	
 	var _question2 = _interopRequireDefault(_question);
 	
-	var _save = __webpack_require__(162);
+	var _save = __webpack_require__(161);
 	
-	var _state = __webpack_require__(163);
+	var _state = __webpack_require__(162);
 	
-	var _decoration = __webpack_require__(161);
+	var _decoration = __webpack_require__(160);
 	
-	var _shuffle = __webpack_require__(160);
+	var _shuffle = __webpack_require__(164);
 	
 	var _shuffle2 = _interopRequireDefault(_shuffle);
 	
@@ -305,7 +305,7 @@
 		return _react2['default'].createElement(
 			'h4',
 			null,
-			questions.length + " questions left"
+			questions.length + ' questions left'
 		);
 	};
 	
@@ -19922,11 +19922,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _shuffle = __webpack_require__(160);
-	
-	var _shuffle2 = _interopRequireDefault(_shuffle);
-	
-	var _decoration = __webpack_require__(161);
+	var _decoration = __webpack_require__(160);
 	
 	// text align style is manually added to the style element
 	// because of bootstrap class precedence issues.
@@ -20093,68 +20089,27 @@
 
 	'use strict';
 	
-	/* 
-	 * Use a hard coded sequence if you want.
-	 */
 	Object.defineProperty(exports, '__esModule', {
 		value: true
 	});
-	var s = 42;
-	var deterministic = function deterministic() {
-		s = Math.sin(s) * 1000;
-		return s - Math.floor(s);
-	};
-	
-	/*
-	 * In place Fisher-Yates shuffle
-	 */
-	
-	exports['default'] = function (A) {
-		for (var i = A.length - 1; i > 0; i--) {
-			var j = Math.floor(deterministic() * (i - 1));
-			var temp = A[i];
-			A[i] = A[j];
-			A[j] = temp;
-		}
-		return A;
-	};
-	
-	module.exports = exports['default'];
-
-/***/ },
-/* 161 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
 	var merge = function merge(a, b) {
 		return Object.assign({}, a, b);
 	};
 	
 	var OK = function OK(_ref) {
 		var style = _ref.style;
-		return _react2['default'].createElement('span', { style: merge(style, { color: 'green' }), className: 'glyphicon glyphicon-ok' });
+		return React.createElement('span', { style: merge(style, { color: 'green' }), className: 'glyphicon glyphicon-ok' });
 	};
 	
 	exports.OK = OK;
 	var NotOK = function NotOK(_ref2) {
 		var style = _ref2.style;
-		return _react2['default'].createElement('span', { style: merge(style, { color: 'red' }), className: 'glyphicon glyphicon-remove' });
+		return React.createElement('span', { style: merge(style, { color: 'red' }), className: 'glyphicon glyphicon-remove' });
 	};
 	exports.NotOK = NotOK;
 
 /***/ },
-/* 162 */
+/* 161 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -20165,16 +20120,16 @@
 	var KEY = 'java-ranch-localstorage';
 	
 	var save = function save(v) {
-	  return localStorage[KEY] = JSON.stringify(v) || "{}";
+	  return localStorage[KEY] = JSON.stringify(v) || '{}';
 	};
 	exports.save = save;
 	var load = function load() {
-	  return JSON.parse(localStorage[KEY] || "{}");
+	  return JSON.parse(localStorage[KEY] || '{}');
 	};
 	exports.load = load;
 
 /***/ },
-/* 163 */
+/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(fetch) {'use strict';
@@ -20183,22 +20138,16 @@
 		value: true
 	});
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
-	var _shuffle = __webpack_require__(160);
-	
-	var _shuffle2 = _interopRequireDefault(_shuffle);
-	
-	var _save = __webpack_require__(162);
+	var _save = __webpack_require__(161);
 	
 	var initial = function initial() {
 		return { questions: [] };
 	};
 	
 	exports.initial = initial;
-	var DATA_URL = "http://seanastephens.github.io/javaranch-data/questions.v2.json";
+	var DATA_URL = 'http://seanastephens.github.io/javaranch-data/questions.v2.json';
 	var loadQuestions = function loadQuestions(callback) {
 		return fetch(DATA_URL).then(function (d) {
 			return d.json();
@@ -20227,10 +20176,10 @@
 		};
 	};
 	exports.markWrong = markWrong;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(164)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(163)))
 
 /***/ },
-/* 164 */
+/* 163 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/*** IMPORTS FROM imports-loader ***/
@@ -20619,6 +20568,40 @@
 	module.exports = global.fetch
 	}.call(global));
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 164 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	/* 
+	 * Use a hard coded sequence if you want.
+	 */
+	Object.defineProperty(exports, '__esModule', {
+		value: true
+	});
+	var s = 42;
+	var deterministic = function deterministic() {
+		s = Math.sin(s) * 1000;
+		return s - Math.floor(s);
+	};
+	
+	/*
+	 * In place Fisher-Yates shuffle
+	 */
+	
+	exports['default'] = function (A) {
+		for (var i = A.length - 1; i > 0; i--) {
+			var j = Math.floor(deterministic() * (i - 1));
+			var temp = A[i];
+			A[i] = A[j];
+			A[j] = temp;
+		}
+		return A;
+	};
+	
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ]);
