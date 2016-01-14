@@ -26,51 +26,35 @@ const IncorrectAnswer = ({ onClick, children }) =>
 
 const Prompt = ({ children }) => <h4>{ children }</h4>;
 
-const Answer = ({ answer, onCorrect, onIncorrect, colored }) => {
-	const onClick = !colored ? (answer.correct ? onCorrect : onIncorrect) : null;
-	const Element = colored ? (answer.correct ? CorrectAnswer : IncorrectAnswer) : DefaultAnswer;
-	return (
-		<div className='col-md-12'>
-			<Element onClick={onClick}> { answer.answer } </Element>
-		</div>
-	);
-};
+const Answer = ({ children }) => <div className='col-md-12'>{ children }</div>;
 
-const Spacer = ({ style }) => (<div className="col-md-12" style={style}/>);
+const Spacer = ({ style }) => <div className="col-md-12" style={style}/>;
 
-const NextButton = ({ onClick, disabled }) => (
+const NextButton = ({ onClick, disabled }) => 
 	<div className="col-md-12">
 		<button className='btn btn-default col-md-2' 
 			onClick={onClick} disabled={disabled}>
 			Next
 		</button>
-	</div>
-);
+	</div>;
 
-const Result = ({ incorrect, children }) => (
+const Result = ({ correct, children }) => 
 	<div className="col-md-12">
-		<h4 style={{color: incorrect ? 'red' : 'black'}}>
+		<h4 style={{color: correct ? 'black' : 'red'}}>
 			{ children }
 		</h4>
-	</div>
-);
+	</div>;
 
 export default React.createClass({
 	getInitialState: () => ({ answered: null }),
 	render() {
-		const incorrectCallback = this.props.onIncorrect;
-		const correctCallback = this.props.onCorrect;
-		const question = this.props.question;
-		const colored = this.state.answered;
-		const answered = this.state.answered;
-		const explanation = question.explanation;
-		const answers = question.answers;
+		const { question, onCorrect, onIncorrect } = this.props;
+		const { explanation, answers } = question;
+		const { answered } = this.state;
+		const answeredCorrect = answered === 'correct';
 
-		const onCorrect = () => this.setState({ answered: 'correct' });
-		const onIncorrect = () => this.setState({ answered: 'incorrect' });
-	
 		const nextCallback = () => {
-			this.state.answered === 'correct' ? correctCallback() : incorrectCallback();
+			answeredCorrect ? onCorrect() : onIncorrect();
 			this.setState(this.getInitialState());
 		};
 
@@ -79,15 +63,28 @@ export default React.createClass({
 				<Prompt>{ question.question }</Prompt>
 				<div>
 					{
-						answers.map((answer, key) => 
-							<Answer {...{key, answer, colored, onCorrect, onIncorrect}}/>
-						)
+						answers.map(({answer, correct} , key) => {
+							const Element = answered ? 
+								(correct ? CorrectAnswer : IncorrectAnswer) : 
+								DefaultAnswer;
+
+							const callback = () => {
+								if(!answered)
+									this.setState({ answered: correct ? 'correct' : 'incorrect' });
+							};
+
+							return (
+								<Answer key={key}>
+									<Element onClick={callback}>{ answer }</Element>
+								</Answer>
+							);
+						})
 					}
 				</div>
 				<Spacer style={{height:'40px'}}/>
 				<NextButton onClick={nextCallback} disabled={!answered}/>
-				<Result incorrect={answered === 'incorrect'}>
-					{ answered && (answered === 'correct' ? 'Correct' : explanation) }
+				<Result correct={answeredCorrect}>
+					{ answered ? (answeredCorrect ? 'Correct' : explanation) : null }
 				</Result>
 			</div>
 		);
