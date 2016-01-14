@@ -66,34 +66,43 @@
 	
 	var _decoration = __webpack_require__(161);
 	
+	var _shuffle = __webpack_require__(160);
+	
+	var _shuffle2 = _interopRequireDefault(_shuffle);
+	
 	var FlashCards = _react2['default'].createClass({
 		displayName: 'FlashCards',
 	
 		getInitialState: _state.initial,
-		componentDidMount: function componentDidMount() {
-			var _this = this;
 	
-			(0, _state.loadQuestions)(function (state) {
-				return _this.setState(state);
-			});
+		storeJSONInState: function storeJSONInState(json) {
+			var done = (0, _save.load)();
+			var questions = (0, _shuffle2['default'])(json.filter(function (q) {
+				return !done[q.id];
+			}));
+			this.setState({ questions: questions });
 		},
+	
+		componentDidMount: function componentDidMount() {
+			(0, _state.loadQuestions)(this.storeJSONInState);
+		},
+	
 		render: function render() {
-			var _this2 = this;
+			var _this = this;
 	
 			var question = this.state.questions[0];
 			var questionsLeft = question !== undefined;
 	
 			var onCorrect = function onCorrect() {
-				return _this2.setState((0, _state.markCorrect)(_this2.state));
+				return _this.setState((0, _state.markCorrect)(_this.state));
 			};
 			var onIncorrect = function onIncorrect() {
-				return _this2.setState((0, _state.markWrong)(_this2.state));
+				return _this.setState((0, _state.markWrong)(_this.state));
 			};
 	
 			var resetQuestions = function resetQuestions() {
-				return (0, _state.reset)(function (state) {
-					return _this2.setState(state);
-				});
+				(0, _state.reset)();
+				(0, _state.loadQuestions)(_this.storeJSONInState);
 			};
 	
 			return _react2['default'].createElement(
@@ -121,18 +130,18 @@
 			return Object.assign({}, (0, _state.initial)(), { search: '' });
 		},
 		componentDidMount: function componentDidMount() {
-			var _this3 = this;
+			var _this2 = this;
 	
 			this.setState({ finished: (0, _save.load)() });
-			(0, _state.loadQuestions)(function (state) {
-				state.questions.sort(function (a, b) {
+			(0, _state.loadQuestions)(function (questions) {
+				questions.sort(function (a, b) {
 					return Number(a.id) < Number(b.id);
 				});
-				_this3.setState(state);
+				_this2.setState({ questions: questions });
 			}, true);
 		},
 		render: function render() {
-			var _this4 = this;
+			var _this3 = this;
 	
 			var questions = this.state.questions;
 			var finished = this.state.finished;
@@ -154,7 +163,7 @@
 				'div',
 				{ className: 'container' },
 				_react2['default'].createElement(Search, { onchange: function (search) {
-						return _this4.setState({ search: search });
+						return _this3.setState({ search: search });
 					} }),
 				questions.filter(filter).map(function (question) {
 					return _react2['default'].createElement(
@@ -175,7 +184,8 @@
 		}
 	});
 	
-	var Search = function Search(props) {
+	var Search = function Search(_ref) {
+		var onchange = _ref.onchange;
 		return _react2['default'].createElement(
 			'div',
 			{ className: 'container well well-md' },
@@ -190,17 +200,18 @@
 				_react2['default'].createElement('input', { type: 'text',
 					className: 'form-control', id: 'search-bar',
 					onChange: function (event) {
-						return props.onchange(event.target.value);
+						return onchange(event.target.value);
 					} })
 			)
 		);
 	};
 	
-	var UnorderedList = function UnorderedList(props) {
+	var UnorderedList = function UnorderedList(_ref2) {
+		var data = _ref2.data;
 		return _react2['default'].createElement(
 			'ul',
 			null,
-			props.data.map(function (line, i) {
+			data.map(function (line, i) {
 				return _react2['default'].createElement(
 					'li',
 					{ className: 'col-xs-12 text-left', key: i },
@@ -221,20 +232,21 @@
 			return { path: 'Flash Cards' };
 		},
 		render: function render() {
-			var _this5 = this;
+			var _this4 = this;
 	
 			return _react2['default'].createElement(
 				'div',
 				{ className: 'container' },
 				_react2['default'].createElement(Header, { onChange: function (path) {
-						return _this5.setState({ path: path });
+						return _this4.setState({ path: path });
 					} }),
 				this.state.path === 'Flash Cards' ? _react2['default'].createElement(FlashCards, null) : _react2['default'].createElement(QuestionList, null)
 			);
 		}
 	});
 	
-	var Header = function Header(props) {
+	var Header = function Header(_ref3) {
+		var onChange = _ref3.onChange;
 		return _react2['default'].createElement(
 			'nav',
 			{ className: 'navbar navbar-default' },
@@ -260,7 +272,7 @@
 							_react2['default'].createElement(
 								'a',
 								{ onClick: function () {
-										return props.onChange(text);
+										return onChange(text);
 									} },
 								text
 							)
@@ -271,17 +283,7 @@
 		);
 	};
 	
-	var Link = function Link(props) {
-		return _react2['default'].createElement(
-			'span',
-			{ onClick: function () {
-					return props.onClick(props.text);
-				} },
-			props.text
-		);
-	};
-	
-	var DoneMessage = function DoneMessage(props) {
+	var DoneMessage = function DoneMessage() {
 		return _react2['default'].createElement(
 			'h4',
 			null,
@@ -289,19 +291,21 @@
 		);
 	};
 	
-	var ResetButton = function ResetButton(props) {
+	var ResetButton = function ResetButton(_ref4) {
+		var onClick = _ref4.onClick;
 		return _react2['default'].createElement(
 			'button',
-			{ className: 'btn btn-warning', onClick: props.onClick },
+			{ className: 'btn btn-warning', onClick: onClick },
 			'Reset Questions'
 		);
 	};
 	
-	var Info = function Info(props) {
+	var Info = function Info(_ref5) {
+		var questions = _ref5.questions;
 		return _react2['default'].createElement(
 			'h4',
 			null,
-			props.questions.length + " questions left"
+			questions.length + " questions left"
 		);
 	};
 	
@@ -19912,8 +19916,6 @@
 		value: true
 	});
 	
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
 	var _react = __webpack_require__(1);
@@ -19928,48 +19930,60 @@
 	
 	// text align style is manually added to the style element
 	// because of bootstrap class precedence issues.
-	var DefaultAnswer = function DefaultAnswer(props) {
+	var DefaultAnswer = function DefaultAnswer(_ref) {
+		var backgroundColor = _ref.backgroundColor;
+		var onClick = _ref.onClick;
+		var children = _ref.children;
 		return _react2['default'].createElement(
 			'button',
 			{ className: 'btn btn-default col-md-4',
-				style: { textAlign: 'left', backgroundColor: props.backgroundColor },
-				onClick: props.onClick },
-			props.children
+				style: { textAlign: 'left', backgroundColor: backgroundColor },
+				onClick: onClick },
+			children
 		);
 	};
 	
-	var CorrectAnswer = function CorrectAnswer(props) {
+	var CorrectAnswer = function CorrectAnswer(_ref2) {
+		var onClick = _ref2.onClick;
+		var children = _ref2.children;
 		return _react2['default'].createElement(
 			DefaultAnswer,
-			{ onClick: props.onClick, backgroundColor: '#BBffBB' },
-			props.children,
+			{ onClick: onClick, backgroundColor: '#BBffBB' },
+			children,
 			' ',
 			_react2['default'].createElement(_decoration.OK, { style: { float: 'right' } })
 		);
 	};
 	
-	var IncorrectAnswer = function IncorrectAnswer(props) {
+	var IncorrectAnswer = function IncorrectAnswer(_ref3) {
+		var onClick = _ref3.onClick;
+		var children = _ref3.children;
 		return _react2['default'].createElement(
 			DefaultAnswer,
-			{ onClick: props.onClick, backgroundColor: '#ffBBBB' },
-			props.children,
+			{ onClick: onClick, backgroundColor: '#ffBBBB' },
+			children,
 			' ',
 			_react2['default'].createElement(_decoration.NotOK, { style: { float: 'right' } })
 		);
 	};
 	
-	var Prompt = function Prompt(props) {
+	var Prompt = function Prompt(_ref4) {
+		var children = _ref4.children;
 		return _react2['default'].createElement(
 			'h4',
 			null,
-			props.children
+			children
 		);
 	};
 	
-	var Answer = function Answer(props) {
-		var answer = props.answer;
-		var onClick = !props.colored ? answer.correct ? props.onCorrect : props.onIncorrect : null;
-		var Element = props.colored ? answer.correct ? CorrectAnswer : IncorrectAnswer : DefaultAnswer;
+	var Answer = function Answer(_ref5) {
+		var answer = _ref5.answer;
+		var onCorrect = _ref5.onCorrect;
+		var onIncorrect = _ref5.onIncorrect;
+		var colored = _ref5.colored;
+	
+		var onClick = !colored ? answer.correct ? onCorrect : onIncorrect : null;
+		var Element = colored ? answer.correct ? CorrectAnswer : IncorrectAnswer : DefaultAnswer;
 		return _react2['default'].createElement(
 			'div',
 			{ className: 'col-md-12' },
@@ -19983,30 +19997,36 @@
 		);
 	};
 	
-	var Spacer = function Spacer(props) {
-		return _react2['default'].createElement('div', { className: 'col-md-12', style: props });
+	var Spacer = function Spacer(_ref6) {
+		var style = _ref6.style;
+		return _react2['default'].createElement('div', { className: 'col-md-12', style: style });
 	};
 	
-	var NextButton = function NextButton(props) {
+	var NextButton = function NextButton(_ref7) {
+		var onClick = _ref7.onClick;
+		var disabled = _ref7.disabled;
 		return _react2['default'].createElement(
 			'div',
 			{ className: 'col-md-12' },
 			_react2['default'].createElement(
 				'button',
-				_extends({ className: 'btn btn-default col-md-2' }, props),
+				{ className: 'btn btn-default col-md-2',
+					onClick: onClick, disabled: disabled },
 				'Next'
 			)
 		);
 	};
 	
-	var Result = function Result(props) {
+	var Result = function Result(_ref8) {
+		var incorrect = _ref8.incorrect;
+		var children = _ref8.children;
 		return _react2['default'].createElement(
 			'div',
 			{ className: 'col-md-12' },
 			_react2['default'].createElement(
 				'h4',
-				{ style: { color: props.incorrect ? 'red' : 'black' } },
-				props.children
+				{ style: { color: incorrect ? 'red' : 'black' } },
+				children
 			)
 		);
 	};
@@ -20055,7 +20075,7 @@
 						return _react2['default'].createElement(Answer, { key: key, answer: answer, colored: colored, onCorrect: onCorrect, onIncorrect: onIncorrect });
 					})
 				),
-				_react2['default'].createElement(Spacer, { height: '40px' }),
+				_react2['default'].createElement(Spacer, { style: { height: '40px' } }),
 				_react2['default'].createElement(NextButton, { onClick: nextCallback, disabled: !answered }),
 				_react2['default'].createElement(
 					Result,
@@ -20121,13 +20141,15 @@
 		return Object.assign({}, a, b);
 	};
 	
-	var OK = function OK(props) {
-		return _react2['default'].createElement('span', { style: merge(props.style, { color: 'green' }), className: 'glyphicon glyphicon-ok' });
+	var OK = function OK(_ref) {
+		var style = _ref.style;
+		return _react2['default'].createElement('span', { style: merge(style, { color: 'green' }), className: 'glyphicon glyphicon-ok' });
 	};
 	
 	exports.OK = OK;
-	var NotOK = function NotOK(props) {
-		return _react2['default'].createElement('span', { style: merge(props.style, { color: 'red' }), className: 'glyphicon glyphicon-remove' });
+	var NotOK = function NotOK(_ref2) {
+		var style = _ref2.style;
+		return _react2['default'].createElement('span', { style: merge(style, { color: 'red' }), className: 'glyphicon glyphicon-remove' });
 	};
 	exports.NotOK = NotOK;
 
@@ -20155,7 +20177,7 @@
 /* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function(fetch) {'use strict';
 	
 	Object.defineProperty(exports, '__esModule', {
 		value: true
@@ -20164,10 +20186,6 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	
-	var _ajax = __webpack_require__(164);
-	
-	var _ajax2 = _interopRequireDefault(_ajax);
 	
 	var _shuffle = __webpack_require__(160);
 	
@@ -20181,21 +20199,15 @@
 	
 	exports.initial = initial;
 	var DATA_URL = "http://seanastephens.github.io/javaranch-data/questions.v2.json";
-	var loadQuestions = function loadQuestions(callback, nofilter) {
-		(0, _ajax2['default'])(DATA_URL, function (data) {
-			var completed = (0, _save.load)();
-			var questions = (0, _shuffle2['default'])(JSON.parse(data).filter(function (q) {
-				return nofilter || completed[q.id] === undefined;
-			}));
-	
-			callback({ questions: questions });
-		});
+	var loadQuestions = function loadQuestions(callback) {
+		return fetch(DATA_URL).then(function (d) {
+			return d.json();
+		}).then(callback);
 	};
 	
 	exports.loadQuestions = loadQuestions;
-	var reset = function reset(callback) {
-		(0, _save.save)({});
-		loadQuestions(callback);
+	var reset = function reset() {
+		return (0, _save.save)({});
 	};
 	
 	exports.reset = reset;
@@ -20215,34 +20227,398 @@
 		};
 	};
 	exports.markWrong = markWrong;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(164)))
 
 /***/ },
 /* 164 */
 /***/ function(module, exports) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function(global) {/*** IMPORTS FROM imports-loader ***/
+	(function() {
 	
-	/* Modified from AbdelHady, at 
-	 * stackoverflow.com/questions/8567114/how-to-make-an-ajax-call-without-jquery 
-	 * 
-	 * Compatible with IE7+, Firefox, Chrome, Opera, Safari. Or so the internet says...
-	 */
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
+	(function() {
+	  'use strict';
 	
-	exports["default"] = function (url, callback) {
-		var req = new XMLHttpRequest();
-		req.onreadystatechange = function () {
-			if (req.readyState == XMLHttpRequest.DONE && req.status == 200) {
-				callback(req.responseText);
-			}
-		};
-		req.open("GET", url, true);
-		req.send();
-	};
+	  if (self.fetch) {
+	    return
+	  }
 	
-	module.exports = exports["default"];
+	  function normalizeName(name) {
+	    if (typeof name !== 'string') {
+	      name = String(name)
+	    }
+	    if (/[^a-z0-9\-#$%&'*+.\^_`|~]/i.test(name)) {
+	      throw new TypeError('Invalid character in header field name')
+	    }
+	    return name.toLowerCase()
+	  }
+	
+	  function normalizeValue(value) {
+	    if (typeof value !== 'string') {
+	      value = String(value)
+	    }
+	    return value
+	  }
+	
+	  function Headers(headers) {
+	    this.map = {}
+	
+	    if (headers instanceof Headers) {
+	      headers.forEach(function(value, name) {
+	        this.append(name, value)
+	      }, this)
+	
+	    } else if (headers) {
+	      Object.getOwnPropertyNames(headers).forEach(function(name) {
+	        this.append(name, headers[name])
+	      }, this)
+	    }
+	  }
+	
+	  Headers.prototype.append = function(name, value) {
+	    name = normalizeName(name)
+	    value = normalizeValue(value)
+	    var list = this.map[name]
+	    if (!list) {
+	      list = []
+	      this.map[name] = list
+	    }
+	    list.push(value)
+	  }
+	
+	  Headers.prototype['delete'] = function(name) {
+	    delete this.map[normalizeName(name)]
+	  }
+	
+	  Headers.prototype.get = function(name) {
+	    var values = this.map[normalizeName(name)]
+	    return values ? values[0] : null
+	  }
+	
+	  Headers.prototype.getAll = function(name) {
+	    return this.map[normalizeName(name)] || []
+	  }
+	
+	  Headers.prototype.has = function(name) {
+	    return this.map.hasOwnProperty(normalizeName(name))
+	  }
+	
+	  Headers.prototype.set = function(name, value) {
+	    this.map[normalizeName(name)] = [normalizeValue(value)]
+	  }
+	
+	  Headers.prototype.forEach = function(callback, thisArg) {
+	    Object.getOwnPropertyNames(this.map).forEach(function(name) {
+	      this.map[name].forEach(function(value) {
+	        callback.call(thisArg, value, name, this)
+	      }, this)
+	    }, this)
+	  }
+	
+	  function consumed(body) {
+	    if (body.bodyUsed) {
+	      return Promise.reject(new TypeError('Already read'))
+	    }
+	    body.bodyUsed = true
+	  }
+	
+	  function fileReaderReady(reader) {
+	    return new Promise(function(resolve, reject) {
+	      reader.onload = function() {
+	        resolve(reader.result)
+	      }
+	      reader.onerror = function() {
+	        reject(reader.error)
+	      }
+	    })
+	  }
+	
+	  function readBlobAsArrayBuffer(blob) {
+	    var reader = new FileReader()
+	    reader.readAsArrayBuffer(blob)
+	    return fileReaderReady(reader)
+	  }
+	
+	  function readBlobAsText(blob) {
+	    var reader = new FileReader()
+	    reader.readAsText(blob)
+	    return fileReaderReady(reader)
+	  }
+	
+	  var support = {
+	    blob: 'FileReader' in self && 'Blob' in self && (function() {
+	      try {
+	        new Blob();
+	        return true
+	      } catch(e) {
+	        return false
+	      }
+	    })(),
+	    formData: 'FormData' in self
+	  }
+	
+	  function Body() {
+	    this.bodyUsed = false
+	
+	
+	    this._initBody = function(body) {
+	      this._bodyInit = body
+	      if (typeof body === 'string') {
+	        this._bodyText = body
+	      } else if (support.blob && Blob.prototype.isPrototypeOf(body)) {
+	        this._bodyBlob = body
+	      } else if (support.formData && FormData.prototype.isPrototypeOf(body)) {
+	        this._bodyFormData = body
+	      } else if (!body) {
+	        this._bodyText = ''
+	      } else {
+	        throw new Error('unsupported BodyInit type')
+	      }
+	    }
+	
+	    if (support.blob) {
+	      this.blob = function() {
+	        var rejected = consumed(this)
+	        if (rejected) {
+	          return rejected
+	        }
+	
+	        if (this._bodyBlob) {
+	          return Promise.resolve(this._bodyBlob)
+	        } else if (this._bodyFormData) {
+	          throw new Error('could not read FormData body as blob')
+	        } else {
+	          return Promise.resolve(new Blob([this._bodyText]))
+	        }
+	      }
+	
+	      this.arrayBuffer = function() {
+	        return this.blob().then(readBlobAsArrayBuffer)
+	      }
+	
+	      this.text = function() {
+	        var rejected = consumed(this)
+	        if (rejected) {
+	          return rejected
+	        }
+	
+	        if (this._bodyBlob) {
+	          return readBlobAsText(this._bodyBlob)
+	        } else if (this._bodyFormData) {
+	          throw new Error('could not read FormData body as text')
+	        } else {
+	          return Promise.resolve(this._bodyText)
+	        }
+	      }
+	    } else {
+	      this.text = function() {
+	        var rejected = consumed(this)
+	        return rejected ? rejected : Promise.resolve(this._bodyText)
+	      }
+	    }
+	
+	    if (support.formData) {
+	      this.formData = function() {
+	        return this.text().then(decode)
+	      }
+	    }
+	
+	    this.json = function() {
+	      return this.text().then(JSON.parse)
+	    }
+	
+	    return this
+	  }
+	
+	  // HTTP methods whose capitalization should be normalized
+	  var methods = ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT']
+	
+	  function normalizeMethod(method) {
+	    var upcased = method.toUpperCase()
+	    return (methods.indexOf(upcased) > -1) ? upcased : method
+	  }
+	
+	  function Request(input, options) {
+	    options = options || {}
+	    var body = options.body
+	    if (Request.prototype.isPrototypeOf(input)) {
+	      if (input.bodyUsed) {
+	        throw new TypeError('Already read')
+	      }
+	      this.url = input.url
+	      this.credentials = input.credentials
+	      if (!options.headers) {
+	        this.headers = new Headers(input.headers)
+	      }
+	      this.method = input.method
+	      this.mode = input.mode
+	      if (!body) {
+	        body = input._bodyInit
+	        input.bodyUsed = true
+	      }
+	    } else {
+	      this.url = input
+	    }
+	
+	    this.credentials = options.credentials || this.credentials || 'omit'
+	    if (options.headers || !this.headers) {
+	      this.headers = new Headers(options.headers)
+	    }
+	    this.method = normalizeMethod(options.method || this.method || 'GET')
+	    this.mode = options.mode || this.mode || null
+	    this.referrer = null
+	
+	    if ((this.method === 'GET' || this.method === 'HEAD') && body) {
+	      throw new TypeError('Body not allowed for GET or HEAD requests')
+	    }
+	    this._initBody(body)
+	  }
+	
+	  Request.prototype.clone = function() {
+	    return new Request(this)
+	  }
+	
+	  function decode(body) {
+	    var form = new FormData()
+	    body.trim().split('&').forEach(function(bytes) {
+	      if (bytes) {
+	        var split = bytes.split('=')
+	        var name = split.shift().replace(/\+/g, ' ')
+	        var value = split.join('=').replace(/\+/g, ' ')
+	        form.append(decodeURIComponent(name), decodeURIComponent(value))
+	      }
+	    })
+	    return form
+	  }
+	
+	  function headers(xhr) {
+	    var head = new Headers()
+	    var pairs = xhr.getAllResponseHeaders().trim().split('\n')
+	    pairs.forEach(function(header) {
+	      var split = header.trim().split(':')
+	      var key = split.shift().trim()
+	      var value = split.join(':').trim()
+	      head.append(key, value)
+	    })
+	    return head
+	  }
+	
+	  Body.call(Request.prototype)
+	
+	  function Response(bodyInit, options) {
+	    if (!options) {
+	      options = {}
+	    }
+	
+	    this._initBody(bodyInit)
+	    this.type = 'default'
+	    this.status = options.status
+	    this.ok = this.status >= 200 && this.status < 300
+	    this.statusText = options.statusText
+	    this.headers = options.headers instanceof Headers ? options.headers : new Headers(options.headers)
+	    this.url = options.url || ''
+	  }
+	
+	  Body.call(Response.prototype)
+	
+	  Response.prototype.clone = function() {
+	    return new Response(this._bodyInit, {
+	      status: this.status,
+	      statusText: this.statusText,
+	      headers: new Headers(this.headers),
+	      url: this.url
+	    })
+	  }
+	
+	  Response.error = function() {
+	    var response = new Response(null, {status: 0, statusText: ''})
+	    response.type = 'error'
+	    return response
+	  }
+	
+	  var redirectStatuses = [301, 302, 303, 307, 308]
+	
+	  Response.redirect = function(url, status) {
+	    if (redirectStatuses.indexOf(status) === -1) {
+	      throw new RangeError('Invalid status code')
+	    }
+	
+	    return new Response(null, {status: status, headers: {location: url}})
+	  }
+	
+	  self.Headers = Headers;
+	  self.Request = Request;
+	  self.Response = Response;
+	
+	  self.fetch = function(input, init) {
+	    return new Promise(function(resolve, reject) {
+	      var request
+	      if (Request.prototype.isPrototypeOf(input) && !init) {
+	        request = input
+	      } else {
+	        request = new Request(input, init)
+	      }
+	
+	      var xhr = new XMLHttpRequest()
+	
+	      function responseURL() {
+	        if ('responseURL' in xhr) {
+	          return xhr.responseURL
+	        }
+	
+	        // Avoid security warnings on getResponseHeader when not allowed by CORS
+	        if (/^X-Request-URL:/m.test(xhr.getAllResponseHeaders())) {
+	          return xhr.getResponseHeader('X-Request-URL')
+	        }
+	
+	        return;
+	      }
+	
+	      xhr.onload = function() {
+	        var status = (xhr.status === 1223) ? 204 : xhr.status
+	        if (status < 100 || status > 599) {
+	          reject(new TypeError('Network request failed'))
+	          return
+	        }
+	        var options = {
+	          status: status,
+	          statusText: xhr.statusText,
+	          headers: headers(xhr),
+	          url: responseURL()
+	        }
+	        var body = 'response' in xhr ? xhr.response : xhr.responseText;
+	        resolve(new Response(body, options))
+	      }
+	
+	      xhr.onerror = function() {
+	        reject(new TypeError('Network request failed'))
+	      }
+	
+	      xhr.open(request.method, request.url, true)
+	
+	      if (request.credentials === 'include') {
+	        xhr.withCredentials = true
+	      }
+	
+	      if ('responseType' in xhr && support.blob) {
+	        xhr.responseType = 'blob'
+	      }
+	
+	      request.headers.forEach(function(value, name) {
+	        xhr.setRequestHeader(name, value)
+	      })
+	
+	      xhr.send(typeof request._bodyInit === 'undefined' ? null : request._bodyInit)
+	    })
+	  }
+	  self.fetch.polyfill = true
+	})();
+	
+	
+	/*** EXPORTS FROM exports-loader ***/
+	module.exports = global.fetch
+	}.call(global));
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }
 /******/ ]);
