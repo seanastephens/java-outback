@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import Question from 'question';
-import { load, save } from 'save';
+import { load } from 'save';
 import { initial, reset, loadQuestions, markCorrect, markWrong } from 'state';
 import { OK } from 'decoration';
 import shuffle from 'shuffle';
@@ -28,7 +28,7 @@ const FlashCards = React.createClass( {
 		const resetQuestions = () => {
 			reset();
 			loadQuestions(this.storeJSONInState);
-		}
+		};
 
 		return (
 			<div className='container'>
@@ -59,7 +59,7 @@ const QuestionList = React.createClass({
 	},
 	render() {
 		const questions = this.state.questions;
-		const finished = this.state.finished
+		const finished = this.state.finished;
 
 		const searchFields = question => question.answers
 			.map(answer => answer.answer)
@@ -153,6 +153,6 @@ const ResetButton = ({ onClick }) =>
 		Reset Questions
 	</button>;
 
-const Info = ({ questions }) => <h4>{ questions.length + " questions left" }</h4>;
+const Info = ({ questions }) => <h4>{ questions.length + ' questions left' }</h4>;
 
 ReactDOM.render(React.createElement(App), document.getElementById('main'));

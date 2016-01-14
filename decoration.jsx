@@ -1,6 +1,4 @@
-'use strict'
-
-import React from 'react';
+'use strict';
 
 const merge = (a, b) => Object.assign({}, a, b);
 

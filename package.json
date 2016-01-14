@@ -6,7 +6,8 @@
   "scripts": {
     "start": "webpack-dev-server --hot --progress --inline --port 4001 --history-api-fallback",
     "test": "echo \"Error: no test specified\" && exit 1",
-		"build-gh-pages": "webpack && cp index.html bundle.js build"
+		"build-gh-pages": "npm run lint && webpack && cp index.html bundle.js build",
+		"lint": "eslint $(ls *.js *.jsx | grep -v bundle | grep -v webpack)"
   },
   "repository": {
     "type": "git",

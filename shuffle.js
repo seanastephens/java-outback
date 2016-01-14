@@ -7,7 +7,7 @@ let s = 42;
 const deterministic = () => {
 	s = Math.sin(s) * 1000;
 	return s - Math.floor(s);
-}
+};
 
 /*
  * In place Fisher-Yates shuffle
@@ -20,4 +20,4 @@ export default A => {
 		A[j] = temp;
 	}
 	return A;	
-}
+};

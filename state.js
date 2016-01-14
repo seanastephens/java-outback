@@ -1,11 +1,10 @@
-'use strict'
+'use strict';
 
-import shuffle from 'shuffle';
 import { load, save } from 'save';
 
 export const initial = () => ({ questions: [] });
 
-const DATA_URL = "http://seanastephens.github.io/javaranch-data/questions.v2.json";
+const DATA_URL = 'http://seanastephens.github.io/javaranch-data/questions.v2.json';
 export const loadQuestions = callback => fetch(DATA_URL)
 	.then(d => d.json())
 	.then(callback);

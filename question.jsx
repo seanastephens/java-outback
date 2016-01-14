@@ -2,7 +2,6 @@
 
 import React from 'react';
 
-import shuffle from 'shuffle';
 import { OK, NotOK } from 'decoration';
 
 // text align style is manually added to the style element
@@ -80,9 +79,9 @@ export default React.createClass({
 				<Prompt>{ question.question }</Prompt>
 				<div>
 					{
-						answers.map((answer, key) => {
-							return <Answer {...{key, answer, colored, onCorrect, onIncorrect}}/>
-						})
+						answers.map((answer, key) => 
+							<Answer {...{key, answer, colored, onCorrect, onIncorrect}}/>
+						)
 					}
 				</div>
 				<Spacer style={{height:'40px'}}/>
