@@ -59,7 +59,7 @@ const QuestionList = React.createClass({
 			questions.sort((a, b) => Number(a.id) < Number(b.id));
 			questions.forEach(sortAnswers);
 			this.setState({ questions });
-		}, true);
+		});
 	},
 	render() {
 		const questions = this.state.questions;
