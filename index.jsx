@@ -87,21 +87,21 @@ const QuestionList = React.createClass({
 	}
 });
 
-const Search = (props) => (
+const Search = ({ onchange }) => (
 	<div className='container well well-md'>
 		<div className="input-group">
 			<span className="input-group-addon">Search</span>
 			<input type="text" 
 				className="form-control" id="search-bar" 
-				onChange={event => props.onchange(event.target.value)}/>
+				onChange={event => onchange(event.target.value)}/>
 		</div>
 	</div>
 );
 
-const UnorderedList = (props) => (
+const UnorderedList = ({ data }) => (
 	<ul>
 		{
-			props.data.map((line, i) => (
+			data.map((line, i) => (
 				<li className="col-xs-12 text-left" key={i}>
 					<h4>
 						{ line }
@@ -126,7 +126,7 @@ const App = React.createClass({
 	}
 });
 
-const Header = (props) => (
+const Header = ({ onChange }) => (
 	<nav className="navbar navbar-default">
 		<div className="container-fluid">
 			<div className="navbar-header">
@@ -134,27 +134,22 @@ const Header = (props) => (
 			</div>
 			<ul className="nav navbar-nav">
 				{
-					['Flash Cards', 'Question List'].map(text => (
-						<li key={text}><a onClick={() => props.onChange(text)}>{text}</a></li>
-					))
+					['Flash Cards', 'Question List'].map(text => 
+						<li key={text}><a onClick={() => onChange(text)}>{text}</a></li>
+					)
 				}
 			</ul>
 		</div>
 	</nav>
 );
 
-const Link = (props) => (
-	<span onClick={() => props.onClick(props.text)}>{props.text}</span>
-);
+const DoneMessage = () => <h4>All done! Hit reset to start over.</h4>;
 
-const DoneMessage = props => (<h4>All done! Hit reset to start over.</h4>);
-
-const ResetButton = props => (
-	<button className="btn btn-warning" onClick={ props.onClick }>
+const ResetButton = ({ onClick }) => 
+	<button className="btn btn-warning" onClick={ onClick }>
 		Reset Questions
-	</button>
-);
+	</button>;
 
-const Info = props => (<h4>{ props.questions.length + " questions left" }</h4>);
+const Info = ({ questions }) => <h4>{ questions.length + " questions left" }</h4>;
 
 ReactDOM.render(React.createElement(App), document.getElementById('main'));

@@ -7,30 +7,29 @@ import { OK, NotOK } from 'decoration';
 
 // text align style is manually added to the style element
 // because of bootstrap class precedence issues. 
-const DefaultAnswer = (props) => (
+const DefaultAnswer = ({ backgroundColor, onClick, children }) => 
 	<button className='btn btn-default col-md-4' 
-		style={{textAlign: 'left', backgroundColor: props.backgroundColor}} 
-		onClick={ props.onClick }>{ props.children }</button>
-);
+		style={{textAlign: 'left', backgroundColor}} 
+		onClick={ onClick }>{ children }</button>
+;
 
-const CorrectAnswer = (props) => (
-	<DefaultAnswer onClick={props.onClick} backgroundColor="#BBffBB">
-		{ props.children } <OK style={{float: 'right'}}/>
+const CorrectAnswer = ({ onClick, children}) => 
+	<DefaultAnswer onClick={onClick} backgroundColor="#BBffBB">
+		{ children } <OK style={{float: 'right'}}/>
 	</DefaultAnswer>
-);
+;
 
-const IncorrectAnswer = (props) => (
-	<DefaultAnswer onClick={props.onClick} backgroundColor="#ffBBBB">
-		{ props.children } <NotOK style={{float: 'right'}}/>
+const IncorrectAnswer = ({ onClick, children }) => 
+	<DefaultAnswer onClick={onClick} backgroundColor="#ffBBBB">
+		{ children } <NotOK style={{float: 'right'}}/>
 	</DefaultAnswer>
-);
+;
 
-const Prompt = (props) => (<h4>{ props.children }</h4>);
+const Prompt = ({ children }) => <h4>{ children }</h4>;
 
-const Answer = (props) => {
-	const answer = props.answer;
-	const onClick = !props.colored ? (answer.correct ? props.onCorrect : props.onIncorrect) : null;
-	const Element = props.colored ? (answer.correct ? CorrectAnswer : IncorrectAnswer) : DefaultAnswer;
+const Answer = ({ answer, onCorrect, onIncorrect, colored }) => {
+	const onClick = !colored ? (answer.correct ? onCorrect : onIncorrect) : null;
+	const Element = colored ? (answer.correct ? CorrectAnswer : IncorrectAnswer) : DefaultAnswer;
 	return (
 		<div className='col-md-12'>
 			<Element onClick={onClick}> { answer.answer } </Element>
@@ -38,18 +37,21 @@ const Answer = (props) => {
 	);
 };
 
-const Spacer = (props) => (<div className="col-md-12" style={props}/>);
+const Spacer = ({ style }) => (<div className="col-md-12" style={style}/>);
 
-const NextButton = (props) => (
+const NextButton = ({ onClick, disabled }) => (
 	<div className="col-md-12">
-		<button className='btn btn-default col-md-2' {...props}>Next</button>
+		<button className='btn btn-default col-md-2' 
+			onClick={onClick} disabled={disabled}>
+			Next
+		</button>
 	</div>
 );
 
-const Result = (props) => (
+const Result = ({ incorrect, children }) => (
 	<div className="col-md-12">
-		<h4 style={{color: props.incorrect ? 'red' : 'black'}}>
-			{ props.children }
+		<h4 style={{color: incorrect ? 'red' : 'black'}}>
+			{ children }
 		</h4>
 	</div>
 );
@@ -83,7 +85,7 @@ export default React.createClass({
 						})
 					}
 				</div>
-				<Spacer height='40px'/>
+				<Spacer style={{height:'40px'}}/>
 				<NextButton onClick={nextCallback} disabled={!answered}/>
 				<Result incorrect={answered === 'incorrect'}>
 					{ answered && (answered === 'correct' ? 'Correct' : explanation) }
