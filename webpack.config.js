@@ -1,7 +1,7 @@
 var webpack = require( 'webpack' );
 
 module.exports = {
-	entry: './index.jsx',
+	entry: './src/index.jsx',
 	// output: {
 	// 	App: [
 	// 		'webpack-dev-server/client?http://localhost:4001',
