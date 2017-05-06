@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.jsx",
   "scripts": {
-    "start": "webpack-dev-server --hot --progress --inline --port 4001 --history-api-fallback",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --hot --progress --inline",
     "build-gh-pages": "npm run lint && NODE_ENV=production webpack && cp index.html bundle.js build",
     "lint": "eslint src"
   },
