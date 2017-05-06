@@ -5,7 +5,18 @@ import { load, save } from './save';
 export const initial = () => ({ questions: [] });
 
 const DATA_URL = 'http://seanastephens.github.io/javaranch-data/questions.v2.json';
-export const loadQuestions = () => fetch(DATA_URL).then(d => d.json());
+let questions = null;
+export const loadQuestions = () => {
+  if(!questions) {
+    return fetch(DATA_URL)
+      .then(d => d.json())
+      .then(q => {
+        questions = q;
+        return Promise.resolve(questions);
+      });
+  }
+  return Promise.resolve(questions);
+};
 
 export const reset = () => save({});
 
