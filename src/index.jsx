@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Perf from 'react-addons-perf';
 
 import Question from 'question';
 import { load } from 'save';
@@ -61,11 +60,16 @@ class QuestionList extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = merge(initial(), {search: ''});
+    this.state = merge(
+      initial(),
+      {
+        search: '',
+        finished: load()
+      }
+    );
   }
 
   componentDidMount() {
-    this.setState({finished: load()});
     loadQuestions(questions => {
       questions.sort((a, b) => Number(a.id) < Number(b.id));
       questions.forEach(sortAnswers);
@@ -84,7 +88,6 @@ class QuestionList extends React.Component {
     const query = this.state.search.toUpperCase();
     const filter = question => searchFields(question)
       .some(text => text.toUpperCase().includes(query));
-
 
     return (
       <div className='container'>
