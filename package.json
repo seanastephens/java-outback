@@ -20,20 +20,12 @@
   },
   "homepage": "https://github.com/seanastephens/java-outback#readme",
   "dependencies": {
-    "css-loader": "0.22.0",
-    "ent": "2.2.0",
-    "eslint": "^3.19.0",
-    "eslint-plugin-react": "^7.0.0",
-    "history": "1.13.0",
-    "imports-loader": "0.6.5",
-    "moment": "2.10.6",
     "react": "15",
-    "react-addons-perf": "^15.4.2",
-    "react-dom": "15",
-    "react-router": "1.0.0-rc3",
-    "style-loader": "0.13.0"
+    "react-dom": "15"
   },
   "devDependencies": {
+    "history": "1.13.0",
+    "imports-loader": "0.6.5",
     "babel-core": "^6.24.1",
     "babel-loader": "5.3.3",
     "exports-loader": "0.6.2",

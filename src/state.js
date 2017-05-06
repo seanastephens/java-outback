@@ -1,6 +1,6 @@
 'use strict';
 
-import { load, save } from 'save';
+import { load, save } from './save';
 
 export const initial = () => ({ questions: [] });
 

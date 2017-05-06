@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { OK, NotOK } from 'decoration';
+import { OK, NotOK } from './decoration';
 
 // text align style is manually added to the style element
 // because of bootstrap class precedence issues.
