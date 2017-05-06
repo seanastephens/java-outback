@@ -7,7 +7,7 @@
     "start": "webpack-dev-server --hot --progress --inline --port 4001 --history-api-fallback",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-gh-pages": "npm run lint && webpack && cp index.html bundle.js build",
-    "lint": "eslint $(ls *.js *.jsx | grep -v bundle | grep -v webpack)"
+    "lint": "eslint src"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,8 @@
   "dependencies": {
     "css-loader": "0.22.0",
     "ent": "2.2.0",
+    "eslint": "^3.19.0",
+    "eslint-plugin-react": "^7.0.0",
     "history": "1.13.0",
     "imports-loader": "0.6.5",
     "moment": "2.10.6",
