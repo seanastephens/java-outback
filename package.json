@@ -31,8 +31,7 @@
     "react-addons-perf": "^15.4.2",
     "react-dom": "15",
     "react-router": "1.0.0-rc3",
-    "style-loader": "0.13.0",
-    "whatwg-fetch": "0.10.0"
+    "style-loader": "0.13.0"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
