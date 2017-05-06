@@ -5,8 +5,7 @@ import Question from './question';
 import { load } from './save';
 import { initial, reset, loadQuestions, markCorrect, markWrong } from './state';
 import { OK } from './decoration';
-import { merge } from './util';
-import shuffle from './shuffle';
+import { shuffle, merge } from './util';
 
 const sortAnswers = ({ answers }) => answers.sort((a, b) => a.answer < b.answer ? 1 : -1);
 
