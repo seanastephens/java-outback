@@ -35,7 +35,14 @@ module.exports = {
 		new webpack.ProvidePlugin( {
 			'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
 		})
-	],
+	].concat(process.env.NODE_ENV === 'production' ? [
+    new webpack.DefinePlugin({
+      'process.env': {
+          NODE_ENV: JSON.stringify('production')
+        }
+    }),
+    new webpack.optimize.UglifyJsPlugin()
+  ] : []),
 	resolve: {
 		modulesDirectories: [ '', 'lib', 'node_modules' ],
 		extensions: [ '', '.js', '.jsx' ]

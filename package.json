@@ -1,24 +1,24 @@
 {
-  "name": "java-react",
+  "name": "java-outback",
   "version": "1.0.0",
   "description": "",
   "main": "index.jsx",
   "scripts": {
     "start": "webpack-dev-server --hot --progress --inline --port 4001 --history-api-fallback",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-gh-pages": "npm run lint && webpack && cp index.html bundle.js build",
+    "build-gh-pages": "npm run lint && NODE_ENV=production webpack && cp index.html bundle.js build",
     "lint": "eslint src"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dmsnell/react-in-five-minutes.git"
+    "url": "git+https://github.com/seanastephens/java-outback.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Sean Stephens",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dmsnell/react-in-five-minutes/issues"
+    "url": "https://github.com/seanastephens/java-outback/issues"
   },
-  "homepage": "https://github.com/dmsnell/react-in-five-minutes#readme",
+  "homepage": "https://github.com/seanastephens/java-outback#readme",
   "dependencies": {
     "css-loader": "0.22.0",
     "ent": "2.2.0",
