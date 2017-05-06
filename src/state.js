@@ -5,9 +5,7 @@ import { load, save } from './save';
 export const initial = () => ({ questions: [] });
 
 const DATA_URL = 'http://seanastephens.github.io/javaranch-data/questions.v2.json';
-export const loadQuestions = callback => fetch(DATA_URL)
-  .then(d => d.json())
-  .then(callback);
+export const loadQuestions = () => fetch(DATA_URL).then(d => d.json());
 
 export const reset = () => save({});
 

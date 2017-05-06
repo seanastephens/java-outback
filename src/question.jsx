@@ -60,7 +60,7 @@ export default class extends React.Component {
 
     const nextCallback = () => {
       answeredCorrect ? onCorrect() : onIncorrect();
-      this.setState(this.getInitialState());
+      this.setState({ answered: null });
     };
 
     return (

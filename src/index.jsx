@@ -24,7 +24,7 @@ class FlashCards extends React.Component {
     this.setState({ questions });
   }
 
-  componentDidMount() { loadQuestions(this.storeJSONInState.bind(this)); }
+  componentDidMount() { loadQuestions().then(this.storeJSONInState.bind(this)); }
 
   render() {
     const question = this.state.questions[0];
@@ -35,7 +35,7 @@ class FlashCards extends React.Component {
 
     const resetQuestions = () => {
       reset();
-      loadQuestions(this.storeJSONInState.bind(this));
+      loadQuestions().then(this.storeJSONInState.bind(this));
     };
 
     return (
@@ -70,7 +70,7 @@ class QuestionList extends React.Component {
   }
 
   componentDidMount() {
-    loadQuestions(questions => {
+    loadQuestions().then(questions => {
       questions.sort((a, b) => Number(a.id) < Number(b.id));
       questions.forEach(sortAnswers);
       this.setState({ questions });
