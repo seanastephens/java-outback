@@ -45,8 +45,13 @@ const Result = ({ correct, children }) =>
     </h4>
   </div>;
 
-export default React.createClass({
-  getInitialState: () => ({ answered: null }),
+export default class extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = { answered: null };
+  }
+
   render() {
     const { question, onCorrect, onIncorrect } = this.props;
     const { explanation, answers } = question;
@@ -89,4 +94,4 @@ export default React.createClass({
       </div>
     );
   }
-});
+};

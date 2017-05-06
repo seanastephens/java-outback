@@ -1,8 +1,7 @@
 'use strict';
 
 import React from 'react'; //eslint-disable-line no-unused-vars
-
-const merge = (a, b) => Object.assign({}, a, b);
+import { merge } from './util';
 
 export const OK = ({ style }) =>
   <span style={merge(style, {color: 'green'})} className="glyphicon glyphicon-ok"/>

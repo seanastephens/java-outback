@@ -1,25 +1,31 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Perf from 'react-addons-perf';
 
 import Question from 'question';
 import { load } from 'save';
 import { initial, reset, loadQuestions, markCorrect, markWrong } from 'state';
 import { OK } from 'decoration';
+import { merge } from './util';
 import shuffle from 'shuffle';
 
 const sortAnswers = ({ answers }) => answers.sort((a, b) => a.answer < b.answer ? 1 : -1);
 
-const FlashCards = React.createClass( {
-  getInitialState: initial,
+class FlashCards extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = initial();
+  }
 
   storeJSONInState(json) {
     const done = load();
     const questions = shuffle(json.filter(q => !done[q.id]));
     questions.forEach(sortAnswers);
     this.setState({ questions });
-  },
+  }
 
-  componentDidMount: function() { loadQuestions(this.storeJSONInState); },
+  componentDidMount() { loadQuestions(this.storeJSONInState.bind(this)); }
 
   render() {
     const question = this.state.questions[0];
@@ -30,7 +36,7 @@ const FlashCards = React.createClass( {
 
     const resetQuestions = () => {
       reset();
-      loadQuestions(this.storeJSONInState);
+      loadQuestions(this.storeJSONInState.bind(this));
     };
 
     return (
@@ -49,10 +55,15 @@ const FlashCards = React.createClass( {
       </div>
     );
   }
-});
+};
 
-const QuestionList = React.createClass({
-  getInitialState: () => Object.assign({}, initial(), {search: ''}),
+class QuestionList extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = merge(initial(), {search: ''});
+  }
+
   componentDidMount() {
     this.setState({finished: load()});
     loadQuestions(questions => {
@@ -60,7 +71,8 @@ const QuestionList = React.createClass({
       questions.forEach(sortAnswers);
       this.setState({ questions });
     });
-  },
+  }
+
   render() {
     const questions = this.state.questions;
     const finished = this.state.finished;
@@ -92,7 +104,7 @@ const QuestionList = React.createClass({
       </div>
     );
   }
-});
+};
 
 const Search = ({ onchange }) => (
   <div className='container well well-md'>
@@ -119,8 +131,13 @@ const UnorderedList = ({ data }) => (
   </ul>
 );
 
-const App = React.createClass({
-  getInitialState: () => ({ path: 'Flash Cards' }),
+class App extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = { path: 'Flash Cards' };
+  }
+
   render() {
     return (
       <div className='container'>
@@ -131,7 +148,8 @@ const App = React.createClass({
       </div>
     );
   }
-});
+
+};
 
 const Header = ({ onChange }) => (
   <nav className="navbar navbar-default">
