@@ -147,7 +147,7 @@ const Header = ({ onChange }) => (
         }
       </ul>
       <ul className="nav navbar-nav navbar-right">
-        <li stykey="github-link"><a href="https://github.com/seanastephens/java-outback">GitHub Source</a></li>
+        <li><a href="https://github.com/seanastephens/java-outback">GitHub Source</a></li>
       </ul>
     </div>
   </nav>
