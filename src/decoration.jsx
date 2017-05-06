@@ -1,5 +1,7 @@
 'use strict';
 
+import React from 'react'; //eslint-disable-line no-unused-vars
+
 import { merge } from './util';
 
 export const OK = ({ style }) =>
